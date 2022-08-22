@@ -1,0 +1,2 @@
+#define cpp_prep_VERSION_MAJOR @cpp_prep_VERSION_MAJOR@
+#define cpp_prep_VERSION_MINOR @cpp_prep_VERSION_MINOR@
