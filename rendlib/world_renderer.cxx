@@ -3,7 +3,7 @@
 
 namespace renderer{
 
-std::map<int, char> WorldRenderer::sizemap_ =  {{0, '.'}, {1, '+'}, {2, 'o'}, {3, 'O'}};
+std::map<int, char> WorldRenderer::sizemap_ =  {{0, '-'}, {1, '+'}, {2, 'o'}, {3, 'O'}};
 
 WorldRenderer::WorldRenderer(int width, int height, std::string character_set)
 {
