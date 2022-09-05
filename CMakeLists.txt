@@ -1,20 +1,22 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(cpp_prep VERSION 1.0 LANGUAGES CXX)
+project(WaveFC VERSION 1.0 LANGUAGES CXX)
 
 configure_file(prep_config.h.in prep_config.h)
 
-add_subdirectory(hwlib)
+add_subdirectory(rendlib)
+add_subdirectory(wfclib)
 
-add_executable(cpp_prep main.cxx)
+add_executable(WaveFC main.cxx)
 
-target_link_libraries(cpp_prep PUBLIC hwlib)
+target_link_libraries(WaveFC PUBLIC rendlib wfclib)
 
 target_include_directories(
-    cpp_prep PUBLIC 
+    WaveFC PUBLIC 
     "${PROJECT_BINARY_DIR}"
-    "${PROJECT_SOURCE_DIR}/hwlib"
+    "${PROJECT_SOURCE_DIR}/rendlib"
+    "${PROJECT_SOURCE_DIR}/wfclib"
 )
 
-install(TARGETS cpp_prep DESTINATION bin)
-install(FILES "${PROJECT_BINARY_DIR}/prep_config.h" DESTINATION include) 
+install(TARGETS WaveFC DESTINATION bin)
+install(FILES "${PROJECT_BINARY_DIR}/prep_config.h" DESTINATION include)

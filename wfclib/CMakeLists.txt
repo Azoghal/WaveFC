@@ -1,0 +1,1 @@
+add_library(wfclib wave_function_collapse.cxx)
