@@ -18,16 +18,6 @@ public:
     ~WaveFunctionCollapse();
 };
 
-WaveFunctionCollapse::WaveFunctionCollapse(char states[], std::vector<wfc::Constraint>)
-{
-    std::cout << "Constructing wave_function_collapse object" << std::endl;
-}
-
-WaveFunctionCollapse::~WaveFunctionCollapse()
-{
-    // destructor
-}
-
 } // namespace wfc
 
 #endif // WaveFC_wfclib_wave_function_collapse_HXX

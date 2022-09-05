@@ -10,6 +10,8 @@ WorldRenderer::WorldRenderer(int width, int height, std::string character_set)
     // Constructor
     width_ = width;
     height_ = height;
+    this->SetWorld();
+    this->SetColourmap();
 }
 
 WorldRenderer::~WorldRenderer()

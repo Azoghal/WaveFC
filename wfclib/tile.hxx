@@ -1,25 +1,26 @@
 #ifndef WaveFC_wfclib_tile_HXX
 #define WaveFC_wfclib_tile_HXX
 
+#include <unordered_map>
+#include <vector>
+#include <optional>
+
 namespace wfc
 {
 
 class Tile
 {
 private:
-    /* data */
+    bool collapsed_;
+    std::optional<int> final_state_;
+    std::unordered_map<int, float> state_;
+    std::vector<std::vector<Tile*>> neighbours_;
 public:
     Tile(/* args */);
     ~Tile();
+    void UpdateState();
+    int CollapseState();
 };
-
-Tile::Tile(/* args */)
-{
-}
-
-Tile::~Tile()
-{
-}
 
 } // namespace wfc
 

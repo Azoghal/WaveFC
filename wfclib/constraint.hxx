@@ -12,14 +12,6 @@ public:
     ~Constraint();
 };
 
-Constraint::Constraint(/* args */)
-{
-}
-
-Constraint::~Constraint()
-{
-}
-
 } // namespace wfc
 
 #endif // WaveFC_wfclib_constraint_HXX

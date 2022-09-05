@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include "world_renderer.hxx"
+#include "wave_function_collapse.hxx"
 
 namespace argparsing{
     int argToInt(std::string arg){
@@ -24,8 +25,6 @@ int main(int argc, char const *argv[])
     int w = argparsing::argToInt(argv[1]);
     int h = argparsing::argToInt(argv[2]);
     renderer::WorldRenderer rendererObject(w, h, "A");
-    rendererObject.SetWorld();
-    rendererObject.SetColourmap();
     rendererObject.PrintWorld();
 
     return 0;
