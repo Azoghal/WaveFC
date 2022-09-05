@@ -3,20 +3,20 @@
 
 namespace wfc{
 
-class constraint
+class Constraint
 {
 private:
     /* data */
 public:
-    constraint(/* args */);
-    ~constraint();
+    Constraint(/* args */);
+    ~Constraint();
 };
 
-constraint::constraint(/* args */)
+Constraint::Constraint(/* args */)
 {
 }
 
-constraint::~constraint()
+Constraint::~Constraint()
 {
 }
 

@@ -4,20 +4,20 @@
 namespace wfc
 {
 
-class tile
+class Tile
 {
 private:
     /* data */
 public:
-    tile(/* args */);
-    ~tile();
+    Tile(/* args */);
+    ~Tile();
 };
 
-tile::tile(/* args */)
+Tile::Tile(/* args */)
 {
 }
 
-tile::~tile()
+Tile::~Tile()
 {
 }
 

@@ -9,21 +9,21 @@
 
 namespace wfc{
 
-class wave_function_collapse
+class WaveFunctionCollapse
 {
 private:
     /* data */
 public:
-    wave_function_collapse(char states[], std::vector<wfc::constraint> constraints);
-    ~wave_function_collapse();
+    WaveFunctionCollapse(char states[], std::vector<wfc::Constraint> constraints);
+    ~WaveFunctionCollapse();
 };
 
-wave_function_collapse::wave_function_collapse(char states[], std::vector<wfc::constraint>)
+WaveFunctionCollapse::WaveFunctionCollapse(char states[], std::vector<wfc::Constraint>)
 {
     std::cout << "Constructing wave_function_collapse object" << std::endl;
 }
 
-wave_function_collapse::~wave_function_collapse()
+WaveFunctionCollapse::~WaveFunctionCollapse()
 {
     // destructor
 }
