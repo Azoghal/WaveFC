@@ -23,8 +23,8 @@ void WorldRenderer::PrintWorld()
 {
     std::vector<std::vector<int>>::iterator row;
     for(auto& row:world_map_){
-        for(auto& col:row){
-            std::cout << colourmap_[col] << sizemap_[0] << ' ' << colourmap_[0];
+        for(auto& item:row){
+            std::cout << colourmap_[item] << sizemap_[item] << ' ' << colourmap_[0];
         }
         std::cout << std::endl;
     }
@@ -33,6 +33,11 @@ void WorldRenderer::PrintWorld()
 void WorldRenderer::SetWorld(){
     std::cout << "Setting empty map" << std::endl;
     std::vector<std::vector<int>> empty_map(height_,std::vector<int>(width_,0));
+    // TODO remove
+    for (int i=0; i<width_; ++i){
+        empty_map[0][i]=2;
+        empty_map[1][i]=1;
+    }
     world_map_ = empty_map;
 }
 
@@ -46,9 +51,9 @@ void WorldRenderer::SetWorld(std::vector<std::vector<int>> map){
 void WorldRenderer::SetColourmap(){
     std::cout << "Setting colourmap" << std::endl;
     colourmap_[0] = "\033[0m";
-    colourmap_[1] = "\033[34m";
-    colourmap_[2] = "\033[35m";
-    colourmap_[3] = "\033[36m";
+    colourmap_[1] = "\033[36m";
+    colourmap_[2] = "\033[32m";
+    colourmap_[3] = "\033[31m";
 
 }
 

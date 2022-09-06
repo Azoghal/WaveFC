@@ -1,5 +1,7 @@
 #include <iostream>
 #include <sstream>
+#include <time.h> 
+
 #include "world_renderer.hxx"
 #include "wave_function_collapse.hxx"
 
@@ -22,10 +24,14 @@ int main(int argc, char const *argv[])
         return 1;
     }
 
+    srand(time(NULL));
+
     int w = argparsing::argToInt(argv[1]);
     int h = argparsing::argToInt(argv[2]);
     renderer::WorldRenderer rendererObject(w, h, "A");
     rendererObject.PrintWorld();
 
+    wfc::Tile tile(3);
+    tile.CollapseState();
     return 0;
 }
