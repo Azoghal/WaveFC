@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 
-#include "constraint.hxx"
+#include "constraints.hxx"
 #include "tile.hxx"
 
 namespace wfc{
@@ -12,10 +12,17 @@ namespace wfc{
 class WaveFunctionCollapse
 {
 private:
-    /* data */
+    std::vector<std::vector<Tile>> world_;
+    int width_, height_;
+    Constraints constraints_;
+    void SetupTiles();
+    wfc::Tile* FindLowestEntropy();
+    void Propagate(wfc::Tile* udpated_tile);
 public:
-    WaveFunctionCollapse(char states[], std::vector<wfc::Constraint> constraints);
+    WaveFunctionCollapse(std::vector<char> states, wfc::Constraints constraints, int width, int height);
     ~WaveFunctionCollapse();
+    void CollapseOnce();
+    void Collapse();
 };
 
 } // namespace wfc

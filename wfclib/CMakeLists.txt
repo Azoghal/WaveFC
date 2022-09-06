@@ -1,1 +1,1 @@
-add_library(wfclib wave_function_collapse.cxx tile.cxx constraint.cxx)
+add_library(wfclib wave_function_collapse.cxx tile.cxx constraints.cxx)

@@ -30,8 +30,5 @@ int main(int argc, char const *argv[])
     int h = argparsing::argToInt(argv[2]);
     renderer::WorldRenderer rendererObject(w, h, "A");
     rendererObject.PrintWorld();
-
-    wfc::Tile tile(3);
-    tile.CollapseState();
     return 0;
 }
