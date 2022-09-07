@@ -15,14 +15,15 @@ private:
     std::vector<std::vector<Tile>> world_;
     int width_, height_;
     Constraints constraints_;
+    Tile* lowest_tile_;
     void SetupTiles();
-    wfc::Tile* FindLowestEntropy();
+    int FindLowestEntropy();
     void Propagate(wfc::Tile* udpated_tile);
 public:
     WaveFunctionCollapse(std::vector<char> states, wfc::Constraints constraints, int width, int height);
     ~WaveFunctionCollapse();
-    void CollapseOnce();
-    void Collapse();
+    int CollapseOnce();
+    bool Collapse();
 };
 
 } // namespace wfc

@@ -32,13 +32,12 @@ void WorldRenderer::PrintWorld()
 
 void WorldRenderer::SetWorld(){
     std::cout << "Setting empty map" << std::endl;
-    std::vector<std::vector<int>> empty_map(height_,std::vector<int>(width_,0));
+    world_map_ = std::vector<std::vector<int>>(height_,std::vector<int>(width_,0));
     // TODO remove
     for (int i=0; i<width_; ++i){
-        empty_map[0][i]=2;
-        empty_map[1][i]=1;
+        world_map_[0][i]=2;
+        world_map_[1][i]=1;
     }
-    world_map_ = empty_map;
 }
 
 void WorldRenderer::SetWorld(std::vector<std::vector<int>> map){
