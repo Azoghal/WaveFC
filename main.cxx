@@ -5,6 +5,7 @@
 #include "world_renderer.hxx"
 #include "wave_function_collapse.hxx"
 
+
 namespace argparsing{
     int argToInt(std::string arg){
         std::istringstream arg_int(arg);
@@ -28,10 +29,11 @@ int main(int argc, char const *argv[])
 
     int w = argparsing::argToInt(argv[1]);
     int h = argparsing::argToInt(argv[2]);
-    // renderer::WorldRenderer rendererObject(w, h, "A");
+    renderer::WorldRenderer WaveRend(w, h, "A");
     // rendererObject.PrintWorld();
 
-    wfc::WaveFunctionCollapse WaveFC(std::vector<char>{'-','+','o'}, wfc::Constraints(), w, h);
+    wfc::WaveFunctionCollapse WaveFC(w, h, 3, wfc::Constraints());
+    WaveFC.AddRenderer(&WaveRend);
     //std::cout << WaveFC.CollapseOnce() << std::endl;
     //std::cout << WaveFC.CollapseOnce() << std::endl;
     //std::cout << WaveFC.CollapseOnce() << std::endl;

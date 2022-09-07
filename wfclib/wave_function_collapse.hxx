@@ -3,9 +3,13 @@
 
 #include <vector>
 #include <iostream>
+#include <map>
+
+#include "world_renderer.hxx"
 
 #include "constraints.hxx"
 #include "tile.hxx"
+
 
 namespace wfc{
 
@@ -16,14 +20,19 @@ private:
     int width_, height_;
     Constraints constraints_;
     Tile* lowest_tile_;
+    std::map<int, char> state_characters_;
+    renderer::WorldRenderer* renderer_;
+    int num_states_;
     void SetupTiles();
     int FindLowestEntropy();
-    void Propagate(wfc::Tile* udpated_tile);
+    void Propagate(wfc::Tile* updated_tile);
+    std::vector<std::vector<int>> PrepareRenderWorld();
 public:
-    WaveFunctionCollapse(std::vector<char> states, wfc::Constraints constraints, int width, int height);
+    WaveFunctionCollapse(int width, int height, int num_states, wfc::Constraints constraints);
     ~WaveFunctionCollapse();
     int CollapseOnce();
-    bool Collapse();
+    int Collapse();
+    void AddRenderer(renderer::WorldRenderer* renderer);
 };
 
 } // namespace wfc

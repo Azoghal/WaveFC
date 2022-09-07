@@ -8,10 +8,13 @@ Tile::Tile(int num_states, Constraints* constraints)
     num_states_ = num_states;
     collapsed_ = false;
     final_state_ = std::nullopt;
+
     float uniform_weight = 1.0/num_states;
     for(int i=0; i< num_states_; ++i){
         state_[i] = uniform_weight;
     }
+    sum_weights_ = uniform_weight*num_states;
+
     constraints_ = constraints;
     this->UpdateEntropy();
 }
@@ -34,6 +37,15 @@ void Tile::UpdateState(){
     }
     if (!collapsed_){
         // do the updating
+        this->UpdateEntropy();
+        this->UpdateSumWeights();
+    }
+}
+
+void Tile::UpdateSumWeights(){
+    sum_weights_ = 0;
+    for (auto const& [id, prob] : state_){
+        sum_weights_ += prob;
     }
 }
 
@@ -74,7 +86,8 @@ int Tile::GetRandomState(){
     // Picks a weighted random state
     // TODO change to make random between 0 and sum of states rather than 1
     // so we can avoid renormalizing after each updated.
-    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    //float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float r = static_cast <float> (rand()) / (static_cast <float>(RAND_MAX) /sum_weights_);
     for(int i=0; i<num_states_; ++i) {
         if(r < state_[i])
             return i;

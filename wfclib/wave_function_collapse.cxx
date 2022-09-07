@@ -1,16 +1,19 @@
 #include "wave_function_collapse.hxx"
 #include <limits>
+#include <stdlib.h>
 
 namespace wfc {
     
-WaveFunctionCollapse::WaveFunctionCollapse(std::vector<char> states, Constraints constraints, int width, int height)
+WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, int num_states, Constraints constraints)
 {
     std::cout << "Constructing wave_function_collapse object" << std::endl;
     width_ = width;
     height_ = height;
     constraints_ = constraints;
+    num_states_ = num_states;
     this->SetupTiles();
     lowest_tile_ = nullptr;
+    renderer_ = nullptr;
 }
 
 WaveFunctionCollapse::~WaveFunctionCollapse()
@@ -19,7 +22,7 @@ WaveFunctionCollapse::~WaveFunctionCollapse()
 }
 
 void WaveFunctionCollapse::SetupTiles(){
-    world_ = std::vector<std::vector<Tile>>(height_, std::vector<Tile>(width_, Tile(height_, &constraints_)));
+    world_ = std::vector<std::vector<Tile>>(width_, std::vector<Tile>(height_, Tile(num_states_, &constraints_)));
     // set neighbours of tiles
     // calculate all their entropies and store minimum
     // options: loop neighbours around
@@ -40,7 +43,6 @@ void WaveFunctionCollapse::SetupTiles(){
         }
     }
 }
-
 
 int WaveFunctionCollapse::CollapseOnce(){
     std::cout << "Collapsing once" << std::endl;
@@ -63,17 +65,24 @@ int WaveFunctionCollapse::CollapseOnce(){
     }
 }
 
-bool WaveFunctionCollapse::Collapse(){
+int WaveFunctionCollapse::Collapse(){
     int result = 0;
     while(result == 0){
-        std::cout << "Make call to rendlib here" << std::endl;
+        if (renderer_){
+            std::vector<std::vector<int>> int_world = this->PrepareRenderWorld();
+            std::cout << "Thing 1" << std::endl;
+            renderer_->SetWorld(int_world);
+            std::cout << "Thing 2" << std::endl;
+            renderer_->PrintWorld();
+            std::cin.ignore();
+        }
         result = this->CollapseOnce();
     }
     if (result == 1){
-        return true;
+        return 0;
     }
     else{
-        return false;
+        return 1;
     }
     // for(auto& row:world_){
     //     for(auto& tile:row){
@@ -119,8 +128,32 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     for(auto row:neighbours){
         for(auto tile:row){
             tile->UpdateState();
-            tile->UpdateEntropy();
         }
     }
+}
+
+std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
+    std::vector<std::vector<int>> int_world(width_, std::vector<int>(height_, 0));
+    for(int y=0; y<height_; ++y){
+        for(int x=0; x<width_; ++x){
+            if(world_[x][y].IsCollapsed()){
+                int_world[x][y] = world_[x][y].final_state_.value();
+            }
+            else{
+                int_world[x][y] = num_states_ + 1;
+            }
+        }
+    }
+    for(auto row:int_world){
+        for(auto num:row){
+            std::cout << num;
+        }
+        std::cout << std::endl;
+    }
+    return int_world;
+}
+
+void WaveFunctionCollapse::AddRenderer(renderer::WorldRenderer* renderer){
+    renderer_ = renderer;
 }
 } // namespace wfc
