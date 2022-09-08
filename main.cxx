@@ -4,6 +4,7 @@
 
 #include "world_renderer.hxx"
 #include "wave_function_collapse.hxx"
+#include "parser.hxx"
 
 
 namespace argparsing{
