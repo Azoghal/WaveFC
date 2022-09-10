@@ -1,4 +1,4 @@
-add_library(wfclib wave_function_collapse.cxx tile.cxx constraints.cxx parser.cxx)
+add_library(wfclib wave_function_collapse.cxx tile.cxx constraints.cxx parser.cxx pattern.cxx)
 
 add_dependencies(wfclib rendlib)
 target_link_libraries(wfclib rendlib) #link library where target is created
