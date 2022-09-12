@@ -1,3 +1,6 @@
+#ifndef WaveFC_wfclib_pattern_HXX
+#define WaveFC_wfclib_pattern_HXX
+
 #include <vector>
 
 namespace wfc{ 
@@ -18,3 +21,5 @@ public:
 };
 
 } // namespace wfc
+
+#endif // WaveFC_wfclib_pattern_HXX

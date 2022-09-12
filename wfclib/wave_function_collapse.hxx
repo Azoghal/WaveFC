@@ -6,7 +6,6 @@
 #include <map>
 
 #include "world_renderer.hxx"
-
 #include "constraints.hxx"
 #include "tile.hxx"
 

@@ -2,8 +2,10 @@
 #define WaveFC_wfclib_parser_HXX
 
 #include <vector> 
+#include <map>
 #include "constraints.hxx"
 #include "pattern.hxx"
+
 
 namespace wfc{
 
@@ -13,7 +15,7 @@ private:
     int kernel_size_;
     std::vector<std::vector<int>> input_;
     void CheckKernelSize();
-    std::vector<wfc::Pattern> GetKernelPatterns();
+    std::map<wfc::Pattern, int> GetKernelPatterns();
 public:
     Parser(std::vector<std::vector<int>> input, int kernel_size);
     ~Parser();

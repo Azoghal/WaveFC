@@ -67,9 +67,10 @@ int WaveFunctionCollapse::CollapseOnce(){
 
 int WaveFunctionCollapse::Collapse(){
     int result = 0;
+    std::vector<std::vector<int>> int_world;
     while(result == 0){
         if (renderer_){
-            std::vector<std::vector<int>> int_world = this->PrepareRenderWorld();
+            int_world = this->PrepareRenderWorld();
             std::cout << "Thing 1" << std::endl;
             renderer_->SetWorld(int_world);
             std::cout << "Thing 2" << std::endl;
@@ -79,18 +80,13 @@ int WaveFunctionCollapse::Collapse(){
         result = this->CollapseOnce();
     }
     if (result == 1){
+        // successful, no error
         return 0;
     }
     else{
+        // Contradiction or error
         return 1;
     }
-    // for(auto& row:world_){
-    //     for(auto& tile:row){
-    //         if (tile.IsCollapsed()){
-    //             return false;
-    //         }
-    //     }
-    // }
 }
 
 int WaveFunctionCollapse::FindLowestEntropy(){

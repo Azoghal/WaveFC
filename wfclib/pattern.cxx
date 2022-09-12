@@ -36,14 +36,7 @@ const bool Pattern::operator<(const Pattern& rhs) const{
         // TODO raise exception
         return false;
     }
-    for (int i=0; i<size_; ++i){
-        for (int j=0; j<size_; ++j){
-            if (pattern_[i][j] < rhs.pattern_[i][j]){
-                return true;
-            }
-        }
-    }
-    return false;
+    return pattern_ < rhs.pattern_;
 }
 
 bool Pattern::CheckMatches(std::vector<std::vector<int>> to_compare_){

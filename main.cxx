@@ -6,7 +6,6 @@
 #include "wave_function_collapse.hxx"
 #include "parser.hxx"
 
-
 namespace argparsing{
     int argToInt(std::string arg){
         std::istringstream arg_int(arg);
@@ -30,14 +29,14 @@ int main(int argc, char const *argv[])
 
     int w = argparsing::argToInt(argv[1]);
     int h = argparsing::argToInt(argv[2]);
+    //std::vector<std::vector<int>> to_parse = {{0,0,0,0},{1,1,1,1},{0,0,0,0},{1,1,1,1}};
+    //wfc::Parser WaveParse(to_parse, 3);
+    //WaveParse.Parse();
     renderer::WorldRenderer WaveRend(w, h, "A");
     // rendererObject.PrintWorld();
 
     wfc::WaveFunctionCollapse WaveFC(w, h, 3, wfc::Constraints());
     WaveFC.AddRenderer(&WaveRend);
-    //std::cout << WaveFC.CollapseOnce() << std::endl;
-    //std::cout << WaveFC.CollapseOnce() << std::endl;
-    //std::cout << WaveFC.CollapseOnce() << std::endl;
     WaveFC.Collapse();
     return 0;
 }

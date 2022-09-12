@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 
+
 namespace wfc{
 
 Parser::Parser(std::vector<std::vector<int>> input, int kernel_size){
@@ -16,12 +17,13 @@ Parser::~Parser(){
 }
 
 wfc::Constraints Parser::Parse(){
-    std::vector<wfc::Pattern> patterns = this->GetKernelPatterns();
+    std::map<wfc::Pattern, int> patterns = this->GetKernelPatterns();
     return wfc::Constraints();
 }
 
-std::vector<wfc::Pattern> Parser::GetKernelPatterns(){
-    std::vector<wfc::Pattern> patterns;
+std::map<wfc::Pattern, int> Parser::GetKernelPatterns(){
+    // Find all kernels (for now ignoring symmetry and rotations)
+    std::map<wfc::Pattern, int> patterns;
     int in_height = input_.size();
     int in_width = input_[0].size();
     // TODO assuming looping boundaries
@@ -35,13 +37,9 @@ std::vector<wfc::Pattern> Parser::GetKernelPatterns(){
                     kernel[i][j] = input_[xx][yy];
                 }
             }
-            patterns.push_back(kernel);
+            patterns[kernel]++;
         }
     }
-    // Do we want to return a map of patterns to number of appearances.
-    // Find all kernels
-    // Find any duplicates (for now ignoring symmetry and rotations)
-    // 
     return patterns;
 }
 
