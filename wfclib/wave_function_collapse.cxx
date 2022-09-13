@@ -140,12 +140,6 @@ std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
             }
         }
     }
-    for(auto row:int_world){
-        for(auto num:row){
-            std::cout << num;
-        }
-        std::cout << std::endl;
-    }
     return int_world;
 }
 
