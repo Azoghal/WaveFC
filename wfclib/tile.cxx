@@ -3,7 +3,7 @@
 
 namespace wfc {
 
-Tile::Tile(int num_states, Constraints* constraints)
+Tile::Tile(int num_states)//, Constraints* constraints)
 {
     num_states_ = num_states;
     collapsed_ = false;
@@ -15,7 +15,7 @@ Tile::Tile(int num_states, Constraints* constraints)
     }
     sum_weights_ = uniform_weight*num_states;
 
-    constraints_ = constraints;
+    //constraints_ = constraints;
     this->UpdateEntropy();
 }
 
@@ -25,7 +25,7 @@ Tile::~Tile()
     //std::cout << "Destructing Tile" << std::endl;
 }
 
-void Tile::UpdateState(){
+void Tile::UpdateState(std::map<int,int> constrained_states){
     // Look at neigbours and update superposition
     // Look at neighbours.
     // Find patterns that still match

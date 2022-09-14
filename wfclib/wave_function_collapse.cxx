@@ -22,7 +22,7 @@ WaveFunctionCollapse::~WaveFunctionCollapse()
 }
 
 void WaveFunctionCollapse::SetupTiles(){
-    world_ = std::vector<std::vector<Tile>>(width_, std::vector<Tile>(height_, Tile(num_states_, &constraints_)));
+    world_ = std::vector<std::vector<Tile>>(width_, std::vector<Tile>(height_, Tile(num_states_)));
     // set neighbours of tiles
     // calculate all their entropies and store minimum
     // options: loop neighbours around
@@ -120,10 +120,15 @@ int WaveFunctionCollapse::FindLowestEntropy(){
 }
 
 void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
+    // Find neighbours that need updated superposition
+    std::cout << "Propogating changes" << std::endl;
     std::vector<std::vector<wfc::Tile*>> neighbours = updated_tile->GetNeighbours();
     for(auto row:neighbours){
         for(auto tile:row){
-            tile->UpdateState();
+            std::cout<< "Getting a neighbour's constrained statse" << std::endl;
+            std::map<int,int> constrained_states = constraints_.GetConstrainedStates(*tile);
+            std::cout<< "Updating a neighbour" << std::endl;
+            tile->UpdateState(constrained_states);
         }
     }
 }

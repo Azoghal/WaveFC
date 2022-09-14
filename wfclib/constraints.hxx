@@ -2,6 +2,7 @@
 #define WaveFC_wfclib_constraints_HXX
 
 #include "pattern.hxx"
+#include "tile.hxx"
 #include <map>
 #include <vector>
 
@@ -15,7 +16,7 @@ private:
 public:
     Constraints();
     ~Constraints();
-    //std::map<int, int> FindValidOptions(wfc::Tile tile);
+    std::map<int, int> GetConstrainedStates(wfc::Tile tile);
 };
 
 } // namespace wfc
