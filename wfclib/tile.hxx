@@ -19,13 +19,14 @@ private:
     bool collapsed_;
     float entropy_;
     float sum_weights_;
+    std::map<int,int> state_distro_;
     std::unordered_map<int, float> state_;
     std::vector<std::vector<Tile*>> neighbours_;
     //Constraints* constraints_;
     int GetRandomState();
     inline void UpdateSumWeights();
 public:
-    Tile(int num_states);//, Constraints* constraints);
+    Tile(std::map<int,int> start_distro);//, Constraints* constraints);
     ~Tile();
     std::optional<int> final_state_;
     void UpdateState(std::unordered_map<int,float> constrained_states);

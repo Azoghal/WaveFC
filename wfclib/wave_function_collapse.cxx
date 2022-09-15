@@ -23,7 +23,7 @@ WaveFunctionCollapse::~WaveFunctionCollapse()
 }
 
 void WaveFunctionCollapse::SetupTiles(){
-    world_ = std::vector<std::vector<Tile>>(width_, std::vector<Tile>(height_, Tile(num_states_)));
+    world_ = std::vector<std::vector<Tile>>(width_, std::vector<Tile>(height_, Tile(state_distro_)));
     // set neighbours of tiles
     // calculate all their entropies and store minimum
     // options: loop neighbours around

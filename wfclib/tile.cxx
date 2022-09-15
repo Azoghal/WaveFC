@@ -3,18 +3,26 @@
 
 namespace wfc {
 
-Tile::Tile(int num_states)//, Constraints* constraints)
+Tile::Tile(std::map<int,int> state_distro_)//, Constraints* constraints)
 {
-    num_states_ = num_states;
+    num_states_ = state_distro_.size();
+    float normaliser;
+    for (auto& [id, count] : state_distro_){
+        normaliser += count;
+    }
+
     collapsed_ = false;
     final_state_ = std::nullopt;
 
-    float uniform_weight = 1.0/num_states;
-    for(int i=0; i< num_states_; ++i){
-        state_[i] = uniform_weight;
+    sum_weights_ = 0;
+    for (auto& [id, count] : state_distro_){
+        state_[id] = count/normaliser;
+        sum_weights_ += count/normaliser;
     }
-    sum_weights_ = uniform_weight*num_states;
 
+    if (sum_weights_ != 1){
+        std::cout << "Sum Weights not 1" << std::endl;
+    }
     //constraints_ = constraints;
     this->UpdateEntropy();
 }

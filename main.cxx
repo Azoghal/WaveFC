@@ -29,7 +29,7 @@ int main(int argc, char const *argv[])
 
     int w = argparsing::argToInt(argv[1]);
     int h = argparsing::argToInt(argv[2]);
-    std::vector<std::vector<int>> to_parse = {{0,0,0,0},{1,1,1,1},{0,0,0,0},{1,1,1,1}};
+    std::vector<std::vector<int>> to_parse = {{1,1,1,1},{1,0,0,1},{1,1,1,1},{1,1,1,1}};
     wfc::Parser WaveParse(to_parse, 3);
     WaveParse.Parse();
     wfc::Constraints constraints = WaveParse.GetConstraints();
