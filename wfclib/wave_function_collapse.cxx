@@ -126,7 +126,7 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     for(auto row:neighbours){
         for(auto tile:row){
             std::cout<< "Getting a neighbour's constrained statse" << std::endl;
-            std::map<int,int> constrained_states = constraints_.GetConstrainedStates(*tile);
+            std::unordered_map<int,float> constrained_states = constraints_.GetConstrainedStates(*tile);
             std::cout<< "Updating a neighbour" << std::endl;
             tile->UpdateState(constrained_states);
         }

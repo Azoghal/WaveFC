@@ -21,8 +21,8 @@ Constraints::~Constraints()
     // Destructor
 }
 
-std::map<int, int> Constraints::GetConstrainedStates(wfc::Tile tile){
-    std::map<int, int> constrained_states;
+std::unordered_map<int, float> Constraints::GetConstrainedStates(wfc::Tile tile){
+    std::unordered_map<int, float> constrained_states;
     // Find states of any collapsed neighbours
     std::vector<std::vector<int>> neighbour_states;
     for (auto row : tile.GetNeighbours()){
@@ -38,11 +38,17 @@ std::map<int, int> Constraints::GetConstrainedStates(wfc::Tile tile){
         neighbour_states.push_back(int_row);
     }
     // Find all observed patterns that match
+    float total_count = 0;
     for (auto const& [pattern, count] : patterns_){
         if (pattern.CheckMatches(neighbour_states)){
             int centre_state= pattern.GetCentre();
             constrained_states[centre_state] += count;
+            total_count += count;
         }
+    }
+    // Normalise
+    for (auto const& [pattern, weight] : constrained_states){
+        constrained_states[pattern] = weight / total_count;
     }
     return constrained_states;
 }

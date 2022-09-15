@@ -28,7 +28,7 @@ public:
     Tile(int num_states);//, Constraints* constraints);
     ~Tile();
     std::optional<int> final_state_;
-    void UpdateState(std::map<int,int> constrained_states);
+    void UpdateState(std::unordered_map<int,float> constrained_states);
     void SetNeighbours(std::vector<std::vector<Tile*>> neighbours);
     std::vector<std::vector<Tile*>> GetNeighbours();
     int CollapseState();

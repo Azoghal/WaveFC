@@ -3,6 +3,7 @@
 
 #include "pattern.hxx"
 #include "tile.hxx"
+#include <unordered_map>
 #include <map>
 #include <vector>
 
@@ -17,7 +18,7 @@ public:
     Constraints();
     Constraints(std::map<wfc::Pattern, int> patterns);
     ~Constraints();
-    std::map<int, int> GetConstrainedStates(wfc::Tile tile);
+    std::unordered_map<int, float> GetConstrainedStates(wfc::Tile tile);
 };
 
 } // namespace wfc

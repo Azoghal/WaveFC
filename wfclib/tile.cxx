@@ -25,17 +25,17 @@ Tile::~Tile()
     //std::cout << "Destructing Tile" << std::endl;
 }
 
-void Tile::UpdateState(std::map<int,int> constrained_states){
+void Tile::UpdateState(std::unordered_map<int,float> constrained_states){
     // Look at neigbours and update superposition
     // Look at neighbours.
     // Find patterns that still match
     // Find what tile each would make this tile
     // Sum counts and split probabilities.
     //TODO this is quick hacky test
-    if (neighbours_[0][0]){
-        state_[0]*=0.5;
-    }
-    // state_ = constrained_states;
+    // if (neighbours_[0][0]){
+    //     state_[0]*=0.5;
+    // }
+    state_ = constrained_states;
     // constrained states needs to be normalised
     // do we want to maintain that state_ always has entries for all state ids
     if (!collapsed_){
@@ -50,6 +50,7 @@ void Tile::UpdateSumWeights(){
     for (auto const& [id, prob] : state_){
         sum_weights_ += prob;
     }
+    std::cout << "Sum weights (should be 1!)" << sum_weights_ << std::endl;
 }
 
 void Tile::UpdateEntropy(){

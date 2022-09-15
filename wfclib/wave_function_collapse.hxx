@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <iostream>
-#include <map>
+#include <unordered_map>
 
 #include "world_renderer.hxx"
 #include "constraints.hxx"
@@ -19,7 +19,7 @@ private:
     int width_, height_;
     Constraints constraints_;
     Tile* lowest_tile_;
-    std::map<int, char> state_characters_;
+    std::unordered_map<int, char> state_characters_;
     renderer::WorldRenderer* renderer_;
     int num_states_;
     void SetupTiles();

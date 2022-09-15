@@ -32,6 +32,7 @@ int main(int argc, char const *argv[])
     std::vector<std::vector<int>> to_parse = {{0,0,0,0},{1,1,1,1},{0,0,0,0},{1,1,1,1}};
     wfc::Parser WaveParse(to_parse, 3);
     wfc::Constraints constraints = WaveParse.Parse();
+    
     renderer::WorldRenderer WaveRend(w, h, "A");
     // rendererObject.PrintWorld();
 

@@ -2,7 +2,7 @@
 #define WaveFC_wfclib_parser_HXX
 
 #include <vector> 
-#include <map>
+#include <unordered_map>
 #include "constraints.hxx"
 #include "pattern.hxx"
 
