@@ -81,6 +81,10 @@ std::vector<std::vector<Tile*>> Tile::GetNeighbours(){
 
 int Tile::CollapseState(){
     // Collapse into a weighted random choice of state
+    if (!state_.size()){
+        std::cout << "Contradiction encountered" << std::endl;
+        return -1;
+    }
     int r_state =  this->GetRandomState();
     final_state_ = r_state;
     collapsed_ = true;

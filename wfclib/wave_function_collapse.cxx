@@ -49,20 +49,28 @@ int WaveFunctionCollapse::CollapseOnce(){
     std::cout << "Collapsing once" << std::endl;
     int next = this->FindLowestEntropy();
     switch (next){
-        case 0:
+        case 0: {
             std::cout << "Lowest Entropy" << lowest_tile_->GetEntropy() << std::endl;
-            lowest_tile_->CollapseState();
+            int collapsed_to = lowest_tile_->CollapseState();
+            if (collapsed_to == -1){
+                std::cout << "Contradiction reached" << std::endl;
+                return 2;
+            }
             this->Propagate(lowest_tile_);
             return 0;
-        case 1:
+        }
+        case 1: {
             std::cout << "All tiles are collapsed" << std::endl;
             return 1;
-        case 2:
+        }
+        case 2: {
             std::cout << "Contradiction reached" << std::endl;
             return 2;
-        default:
+        }
+        default: {
             std::cout << "Unexepcted return code from FindLowestEntropy()" << std::endl;
             return 3;
+        }
     }
 }
 
@@ -101,9 +109,10 @@ int WaveFunctionCollapse::FindLowestEntropy(){
         for(auto& tile:row){
             if (!tile.IsCollapsed()){
                 all_collapsed = false;
-                if (tile.GetEntropy() < min_entropy){
+                float entropy = tile.GetEntropy();
+                if (entropy < min_entropy){
                     lowest = &tile;
-                    min_entropy = tile.GetEntropy();
+                    min_entropy = entropy;
                 }
             }
         }
@@ -116,6 +125,9 @@ int WaveFunctionCollapse::FindLowestEntropy(){
         return 1;
     }
     else{
+        // Contradiction as not all collapsed
+        // This case should not occur, contradictions are checked 
+        // at collapse time.
         return 2;
     }
 }
