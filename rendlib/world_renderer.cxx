@@ -3,7 +3,7 @@
 
 namespace renderer{
 
-std::map<int, char> WorldRenderer::sizemap_ =  {{0, '-'}, {1, '+'}, {2, 'o'}, {3, 'O'}, {4,' '}};
+std::map<int, char> WorldRenderer::sizemap_ =  {{-1,'_'}, {0, '-'}, {1, '+'}, {2, 'o'}, {3, 'O'}};
 
 WorldRenderer::WorldRenderer(int width, int height, std::string character_set)
 {
@@ -24,7 +24,7 @@ void WorldRenderer::PrintWorld()
     //std::vector<std::vector<int>>::iterator row;
     for(auto& row:world_map_){
         for(auto& item:row){
-            std::cout << colourmap_[0] << sizemap_[item] << colourmap_[0];
+            std::cout << colourmap_[item] << sizemap_[item] << " " << colourmap_[-1];
         }
         std::cout << std::endl;
     }
@@ -33,11 +33,6 @@ void WorldRenderer::PrintWorld()
 void WorldRenderer::SetWorld(){
     std::cout << "Setting empty map" << std::endl;
     world_map_ = std::vector<std::vector<int>>(height_,std::vector<int>(width_,0));
-    // TODO remove
-    for (int i=0; i<width_; ++i){
-        world_map_[0][i]=2;
-        world_map_[1][i]=1;
-    }
 }
 
 void WorldRenderer::SetWorld(std::vector<std::vector<int>> map){
@@ -56,10 +51,11 @@ void WorldRenderer::SetWorld(std::vector<std::vector<int>> map){
 
 void WorldRenderer::SetColourmap(){
     std::cout << "Setting colourmap" << std::endl;
-    colourmap_[0] = "\033[0m";
-    colourmap_[1] = "\033[36m";
-    colourmap_[2] = "\033[32m";
-    colourmap_[3] = "\033[31m";
+    colourmap_[-1] = "\033[0m";
+    colourmap_[0] = "\033[36m";
+    colourmap_[1] = "\033[32m";
+    colourmap_[2] = "\033[31m";
+    colourmap_[3] = "\033[35m";
 }
 
 } // namespace renderer

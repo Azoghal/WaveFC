@@ -1,4 +1,5 @@
 #include "pattern.hxx"
+#include <iostream>
 
 namespace wfc{
 
@@ -46,12 +47,33 @@ bool Pattern::CheckMatches(std::vector<std::vector<int>> to_compare_) const{
     if (to_compare_.size() != size_ || to_compare_[0].size() != size_){
         return false;
     }
+    std::cout << "within check match" << std::endl;
+
+    // DEBUG PRINTING
+    std::cout << "this pattern: " << size_ << std::endl;
+    for (auto row : pattern_){
+        for (auto val : row){
+            std::cout << val;
+        }
+        std::cout << std::endl;
+    }
+
+    // DEBUG PRINTING
+    std::cout << "to compare: " << size_ << std::endl;
+    for (auto row : to_compare_){
+        for (auto val : row){
+            std::cout << val;
+        }
+        std::cout << std::endl;
+    }
+
     // then loop through and compare
     // all non -1 elements should be equal
     for (int y=0; y < size_; ++y){
-        for (int x=0; x<size_; ++y){
+        for (int x=0; x<size_; ++x){
             int val = to_compare_[x][y];
             if (val >= 0 && val != pattern_[x][y]){
+                std::cout << "Pattern mismatch" << x << " " << y << " " << to_compare_[x][y] << " " << pattern_[x][y] << std::endl;;
                 return false;
             }
         }

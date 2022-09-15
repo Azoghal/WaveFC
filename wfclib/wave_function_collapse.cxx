@@ -4,13 +4,14 @@
 
 namespace wfc {
     
-WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, int num_states, Constraints constraints)
+WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, Constraints constraints, std::map<int,int> state_distro)
 {
     std::cout << "Constructing wave_function_collapse object" << std::endl;
     width_ = width;
     height_ = height;
     constraints_ = constraints;
-    num_states_ = num_states;
+    state_distro_ = state_distro;
+    num_states_ = state_distro.size();
     this->SetupTiles();
     lowest_tile_ = nullptr;
     renderer_ = nullptr;
@@ -141,7 +142,7 @@ std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
                 int_world[x][y] = world_[x][y].final_state_.value();
             }
             else{
-                int_world[x][y] = num_states_ + 1;
+                int_world[x][y] = -1;
             }
         }
     }

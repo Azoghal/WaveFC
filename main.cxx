@@ -31,12 +31,14 @@ int main(int argc, char const *argv[])
     int h = argparsing::argToInt(argv[2]);
     std::vector<std::vector<int>> to_parse = {{0,0,0,0},{1,1,1,1},{0,0,0,0},{1,1,1,1}};
     wfc::Parser WaveParse(to_parse, 3);
-    wfc::Constraints constraints = WaveParse.Parse();
+    WaveParse.Parse();
+    wfc::Constraints constraints = WaveParse.GetConstraints();
+    std::map<int,int> state_distro = WaveParse.GetStateDistribution();
     
     renderer::WorldRenderer WaveRend(w, h, "A");
     // rendererObject.PrintWorld();
 
-    wfc::WaveFunctionCollapse WaveFC(w, h, 3, constraints);
+    wfc::WaveFunctionCollapse WaveFC(w, h, constraints, state_distro);
     WaveFC.AddRenderer(&WaveRend);
     WaveFC.Collapse();
     return 0;
