@@ -7,8 +7,13 @@ namespace wfc {
 
 Constraints::Constraints()
 {
+
+}
+
+Constraints::Constraints(std::map<wfc::Pattern, int> patterns)
+{
     // Constructor
-    std::cout << "Making a Constraints object" << std::endl;
+    patterns_ = patterns;
 }
 
 Constraints::~Constraints()
@@ -30,6 +35,11 @@ std::map<int, int> Constraints::GetConstrainedStates(wfc::Tile tile){
             }
         }
         std::cout << std::endl;
+    }
+    // Find all observed patterns that match
+    std::cout << "about to do some iterations" << std::endl;
+    for (auto const& [pattern, count] : patterns_){
+        std::cout << "an iteration" << std::endl;
     }
     return constrained_states;
 }

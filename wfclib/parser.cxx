@@ -1,5 +1,4 @@
 #include "parser.hxx"
-
 #include <iostream>
 #include <cmath>
 
@@ -18,7 +17,7 @@ Parser::~Parser(){
 
 wfc::Constraints Parser::Parse(){
     std::map<wfc::Pattern, int> patterns = this->GetKernelPatterns();
-    return wfc::Constraints();
+    return wfc::Constraints(patterns);
 }
 
 std::map<wfc::Pattern, int> Parser::GetKernelPatterns(){

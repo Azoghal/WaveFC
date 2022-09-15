@@ -15,6 +15,7 @@ private:
     std::map<wfc::Pattern, int> patterns_;
 public:
     Constraints();
+    Constraints(std::map<wfc::Pattern, int> patterns);
     ~Constraints();
     std::map<int, int> GetConstrainedStates(wfc::Tile tile);
 };
