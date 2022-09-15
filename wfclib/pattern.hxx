@@ -16,8 +16,9 @@ public:
     ~Pattern();
     std::vector<Pattern> GenerateRotations();
     std::vector<Pattern> GenerateReflections();
-    bool CheckMatches(std::vector<std::vector<int>> to_compare_);
+    bool CheckMatches(std::vector<std::vector<int>> to_compare_) const;
     const bool operator<(Pattern const& rhs) const;
+    int GetCentre() const;
 };
 
 } // namespace wfc

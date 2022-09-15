@@ -39,9 +39,29 @@ const bool Pattern::operator<(const Pattern& rhs) const{
     return pattern_ < rhs.pattern_;
 }
 
-bool Pattern::CheckMatches(std::vector<std::vector<int>> to_compare_){
-    // TODO not implemented
-    return false;
+bool Pattern::CheckMatches(std::vector<std::vector<int>> to_compare_) const{
+    // to_compare has -1 for tiles not to be compared,
+    // otherwise >= 0 for collapsed neighbours
+    // First check sizes match
+    if (to_compare_.size() != size_ || to_compare_[0].size() != size_){
+        return false;
+    }
+    // then loop through and compare
+    // all non -1 elements should be equal
+    for (int y=0; y < size_; ++y){
+        for (int x=0; x<size_; ++y){
+            int val = to_compare_[x][y];
+            if (val >= 0 && val != pattern_[x][y]){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+int Pattern::GetCentre() const{
+    int c = size_/2;
+    return pattern_[c][c];
 }
 
 } // namespace wfc

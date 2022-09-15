@@ -35,6 +35,9 @@ void Tile::UpdateState(std::map<int,int> constrained_states){
     if (neighbours_[0][0]){
         state_[0]*=0.5;
     }
+    // state_ = constrained_states;
+    // constrained states needs to be normalised
+    // do we want to maintain that state_ always has entries for all state ids
     if (!collapsed_){
         // do the updating
         this->UpdateEntropy();

@@ -26,20 +26,23 @@ std::map<int, int> Constraints::GetConstrainedStates(wfc::Tile tile){
     // Find states of any collapsed neighbours
     std::vector<std::vector<int>> neighbour_states;
     for (auto row : tile.GetNeighbours()){
+        std::vector<int> int_row;
         for (auto tile_p : row){
             if (tile_p->IsCollapsed()){
-                std::cout << tile_p->final_state_.value();
+                int_row.push_back(tile_p->final_state_.value());
             }
             else{
-                std::cout << -1;
+                int_row.push_back(-1);
             }
         }
-        std::cout << std::endl;
+        neighbour_states.push_back(int_row);
     }
     // Find all observed patterns that match
-    std::cout << "about to do some iterations" << std::endl;
     for (auto const& [pattern, count] : patterns_){
-        std::cout << "an iteration" << std::endl;
+        if (pattern.CheckMatches(neighbour_states)){
+            int centre_state= pattern.GetCentre();
+            constrained_states[centre_state] += count;
+        }
     }
     return constrained_states;
 }
