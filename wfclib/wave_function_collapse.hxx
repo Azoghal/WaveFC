@@ -22,13 +22,13 @@ private:
     std::unordered_map<int, char> state_characters_;
     renderer::WorldRenderer* renderer_;
     int num_states_;
-    std::map<int,int> state_distro_;
+    std::unordered_map<int,int> state_distro_;
     void SetupTiles();
     int FindLowestEntropy();
     void Propagate(wfc::Tile* updated_tile);
     std::vector<std::vector<int>> PrepareRenderWorld();
 public:
-    WaveFunctionCollapse(int width, int height, wfc::Constraints constraints, std::map<int,int> state_distro);
+    WaveFunctionCollapse(int width, int height, wfc::Constraints constraints, std::unordered_map<int,int> state_distro);
     int CollapseOnce();
     int Collapse(bool wait_for_input);
     void AddRenderer(renderer::WorldRenderer* renderer);

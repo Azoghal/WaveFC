@@ -3,7 +3,7 @@
 
 namespace wfc {
 
-Tile::Tile(std::map<int,int> state_distro_)//, Constraints* constraints)
+Tile::Tile(std::unordered_map<int,int> state_distro_)//, Constraints* constraints)
 {
     num_states_ = state_distro_.size();
     float normaliser;

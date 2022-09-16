@@ -12,14 +12,14 @@ Parser::Parser(std::vector<std::vector<int>> input, int kernel_size){
 }
 
 void Parser::Parse(){
-    std::pair<std::map<int,int>, std::map<wfc::Pattern, int>> parsed = this->ParseLoop();
+    std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> parsed = this->ParseLoop();
     state_distribution_ = parsed.first;
     constraints_ =  wfc::Constraints(parsed.second);
 }
 
-std::pair<std::map<int,int>, std::map<wfc::Pattern, int>> Parser::ParseLoop(){
+std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> Parser::ParseLoop(){
     // Find all kernels (for now ignoring symmetry and rotations)
-    std::map<int, int> states_observed;
+    std::unordered_map<int, int> states_observed;
     std::map<wfc::Pattern, int> patterns;
     int in_height = input_.size();
     int in_width = input_[0].size();
@@ -38,7 +38,7 @@ std::pair<std::map<int,int>, std::map<wfc::Pattern, int>> Parser::ParseLoop(){
             patterns[kernel]++;
         }
     }
-    return std::pair<std::map<int,int>, std::map<wfc::Pattern, int>> (states_observed, patterns);
+    return std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> (states_observed, patterns);
 }
 
 void Parser::CheckKernelSize(){
@@ -53,7 +53,7 @@ void Parser::SetKernelSize(int kernel_size){
     this->CheckKernelSize();
 }
 
-std::map<int,int> Parser::GetStateDistribution(){
+std::unordered_map<int,int> Parser::GetStateDistribution(){
     return state_distribution_;
 }
 

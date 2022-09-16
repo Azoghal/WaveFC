@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])
     wfc::Parser WaveParse(to_parse, 3);
     WaveParse.Parse();
     wfc::Constraints constraints = WaveParse.GetConstraints();
-    std::map<int,int> state_distro = WaveParse.GetStateDistribution();
+    std::unordered_map<int,int> state_distro = WaveParse.GetStateDistribution();
     
     // Setup renderer
     renderer::WorldRenderer WaveRend(w, h);

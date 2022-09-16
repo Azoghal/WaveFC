@@ -4,7 +4,7 @@
 
 namespace wfc {
     
-WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, Constraints constraints, std::map<int,int> state_distro)
+WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, Constraints constraints, std::unordered_map<int,int> state_distro)
 {
     std::cout << "Constructing wave_function_collapse object" << std::endl;
     width_ = width;

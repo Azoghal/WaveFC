@@ -15,8 +15,8 @@ private:
     int kernel_size_;
     std::vector<std::vector<int>> input_;
     void CheckKernelSize();
-    std::pair<std::map<int,int>, std::map<wfc::Pattern, int>> ParseLoop();
-    std::map<int,int> state_distribution_;
+    std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> ParseLoop();
+    std::unordered_map<int,int> state_distribution_;
     wfc::Constraints constraints_;
 public:
     Parser(std::vector<std::vector<int>> input, int kernel_size);
@@ -24,7 +24,7 @@ public:
     void UpdateInput(std::vector<std::vector<int>> new_input);
     void Parse();
     wfc::Constraints GetConstraints();
-    std::map<int,int> GetStateDistribution();
+    std::unordered_map<int,int> GetStateDistribution();
 };
 
 
