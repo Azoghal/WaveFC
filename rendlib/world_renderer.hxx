@@ -21,7 +21,6 @@ private:
     
 public:
     WorldRenderer(int width, int height);
-    ~WorldRenderer();
     void PrintWorld();
     void SetWorld();
     void SetWorld(std::vector<std::vector<int>> new_world);

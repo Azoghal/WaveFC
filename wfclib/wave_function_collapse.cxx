@@ -17,11 +17,6 @@ WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, Constraints co
     renderer_ = nullptr;
 }
 
-WaveFunctionCollapse::~WaveFunctionCollapse()
-{
-    // destructor
-}
-
 void WaveFunctionCollapse::SetupTiles(){
     world_ = std::vector<std::vector<Tile>>(width_, std::vector<Tile>(height_, Tile(state_distro_)));
     // set neighbours of tiles

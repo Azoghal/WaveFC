@@ -27,12 +27,6 @@ Tile::Tile(std::map<int,int> state_distro_)//, Constraints* constraints)
     this->UpdateEntropy();
 }
 
-Tile::~Tile()
-{
-    // Destructor
-    //std::cout << "Destructing Tile" << std::endl;
-}
-
 void Tile::UpdateState(std::unordered_map<int,float> constrained_states){
     // Look at neigbours and update superposition
     // Look at neighbours.

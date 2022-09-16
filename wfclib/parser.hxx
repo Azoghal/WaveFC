@@ -20,7 +20,6 @@ private:
     wfc::Constraints constraints_;
 public:
     Parser(std::vector<std::vector<int>> input, int kernel_size);
-    ~Parser();
     void SetKernelSize(int kernel_size);
     void UpdateInput(std::vector<std::vector<int>> new_input);
     void Parse();

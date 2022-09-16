@@ -13,11 +13,6 @@ WorldRenderer::WorldRenderer(int width, int height)
     this->SetWorld();
 }
 
-WorldRenderer::~WorldRenderer()
-{
-    // Destructor
-}
-
 void WorldRenderer::PrintWorld()
 {
     // For each location, add ANSI colour, relevant glyph, escape ANSI colour.

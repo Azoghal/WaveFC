@@ -11,10 +11,6 @@ Parser::Parser(std::vector<std::vector<int>> input, int kernel_size){
     this->CheckKernelSize();
 }
 
-Parser::~Parser(){
-
-}
-
 void Parser::Parse(){
     std::pair<std::map<int,int>, std::map<wfc::Pattern, int>> parsed = this->ParseLoop();
     state_distribution_ = parsed.first;

@@ -16,11 +16,6 @@ Constraints::Constraints(std::map<wfc::Pattern, int> patterns)
     patterns_ = patterns;
 }
 
-Constraints::~Constraints()
-{
-    // Destructor
-}
-
 std::unordered_map<int, float> Constraints::GetConstrainedStates(wfc::Tile tile){
     std::unordered_map<int, float> constrained_states;
     // Find states of any collapsed neighbours

@@ -17,11 +17,6 @@ Pattern::Pattern(std::vector<std::vector<int>> pattern)
     // TODO Raise exception if not square
 }
 
-Pattern::~Pattern()
-{
-
-}
-
 std::vector<Pattern> Pattern::GenerateRotations(){
     std::vector<Pattern> a = {*this};
     return a;

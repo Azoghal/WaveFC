@@ -17,7 +17,6 @@ private:
 public:
     Constraints();
     Constraints(std::map<wfc::Pattern, int> patterns);
-    ~Constraints();
     std::unordered_map<int, float> GetConstrainedStates(wfc::Tile tile);
 };
 

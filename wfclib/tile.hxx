@@ -27,7 +27,6 @@ private:
     inline void UpdateSumWeights();
 public:
     Tile(std::map<int,int> start_distro);//, Constraints* constraints);
-    ~Tile();
     std::optional<int> final_state_;
     void UpdateState(std::unordered_map<int,float> constrained_states);
     void SetNeighbours(std::vector<std::vector<Tile*>> neighbours);
