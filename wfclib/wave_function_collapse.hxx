@@ -31,7 +31,7 @@ public:
     WaveFunctionCollapse(int width, int height, wfc::Constraints constraints, std::map<int,int> state_distro);
     ~WaveFunctionCollapse();
     int CollapseOnce();
-    int Collapse();
+    int Collapse(bool wait_for_input);
     void AddRenderer(renderer::WorldRenderer* renderer);
 };
 

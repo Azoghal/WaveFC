@@ -74,7 +74,7 @@ int WaveFunctionCollapse::CollapseOnce(){
     }
 }
 
-int WaveFunctionCollapse::Collapse(){
+int WaveFunctionCollapse::Collapse(bool wait_for_input){
     int result = 0;
     std::vector<std::vector<int>> int_world;
     while(result == 0){
@@ -84,7 +84,9 @@ int WaveFunctionCollapse::Collapse(){
             renderer_->SetWorld(int_world);
             std::cout << "Thing 2" << std::endl;
             renderer_->PrintWorld();
-            std::cin.ignore();
+            if (wait_for_input) {
+                std::cin.ignore();
+            }
         }
         result = this->CollapseOnce();
     }
