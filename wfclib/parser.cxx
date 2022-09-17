@@ -5,7 +5,8 @@
 
 namespace wfc{
 
-Parser::Parser(std::vector<std::vector<int>> input, int kernel_size){
+Parser::Parser(std::vector<std::vector<int>> input, int kernel_size)
+{
     input_ = input;
     kernel_size_ = kernel_size;
     this->CheckKernelSize();

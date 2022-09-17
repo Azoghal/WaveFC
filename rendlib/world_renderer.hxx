@@ -13,7 +13,6 @@ namespace renderer {
 class WorldRenderer
 {
 private:
-    /* data */
     int width_, height_;
     std::vector<std::vector<int>> world_map_;
     std::unordered_map<int, std::string> colourmap_;

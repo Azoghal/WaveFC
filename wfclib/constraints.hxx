@@ -12,7 +12,6 @@ namespace wfc{
 class Constraints
 {
 private:
-    /* data */
     std::map<wfc::Pattern, int> patterns_;
 public:
     Constraints();

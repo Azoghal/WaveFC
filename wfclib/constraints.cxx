@@ -5,15 +5,15 @@
 
 namespace wfc {
 
-Constraints::Constraints()
-{
-
-}
-
 Constraints::Constraints(std::map<wfc::Pattern, int> patterns)
 {
-    // Constructor
     patterns_ = patterns;
+}
+
+Constraints::Constraints()
+{
+    // Default constructor for parser and wfc initialisation
+    Constraints(std::map<wfc::Pattern, int>());
 }
 
 std::unordered_map<int, float> Constraints::GetConstrainedStates(wfc::Tile tile){
