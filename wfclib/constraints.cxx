@@ -33,15 +33,6 @@ std::unordered_map<int, float> Constraints::GetConstrainedStates(wfc::Tile tile)
         neighbour_states.push_back(int_row);
     }
 
-    // DEBUG PRINTING
-    std::cout << "Neighbour states at source" << std::endl;
-    for (auto row : neighbour_states){
-        for (auto val: row){
-            std::cout << val;
-        }
-        std::cout << std::endl;
-    }
-
     // Find all observed patterns that match
     float total_count = 0;
     for (auto const& [pattern, count] : patterns_){
@@ -53,6 +44,7 @@ std::unordered_map<int, float> Constraints::GetConstrainedStates(wfc::Tile tile)
             total_count += count;
         }
     }
+    
     // Normalise
     for (auto const& [pattern, weight] : constrained_states){
         std::cout << "constrained weight" << weight << std::endl;

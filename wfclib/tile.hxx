@@ -25,11 +25,11 @@ private:
 public:
     Tile(std::unordered_map<int,int> start_distro);
     std::optional<int> final_state_;
+    int CollapseState();
+    void UpdateEntropy();
     void UpdateState(std::unordered_map<int,float> constrained_states);
     void SetNeighbours(std::vector<std::vector<Tile*>> neighbours);
     std::vector<std::vector<Tile*>> GetNeighbours();
-    int CollapseState();
-    void UpdateEntropy();
     float GetEntropy();
     bool IsCollapsed();
 };

@@ -25,12 +25,15 @@ std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> Parser::Pars
     int in_height = input_.size();
     int in_width = input_[0].size();
     // TODO assuming looping boundaries
+    // TODO faster loops?
     for (int y=0; y<in_height; ++y){
         for (int x=0; x<in_width; ++x){
             states_observed[input_[x][y]] += 1;
             std::vector<std::vector<int>> kernel(kernel_size_, std::vector<int>(kernel_size_));
+            // kernel from current top left 
             for (int i=0; i<kernel_size_; ++i){
                 for (int j=0; j<kernel_size_; ++j){
+                    // Boundary looping logic
                     int xx = (x + i + in_width) % in_width;
                     int yy = (y + j + in_height) % in_height;
                     kernel[i][j] = input_[xx][yy];
@@ -43,6 +46,8 @@ std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> Parser::Pars
 }
 
 void Parser::CheckKernelSize(){
+    // Kernel smaller than input means that with looping boundaries, the same
+    // tile can appear more than once in the same kernel.
     if (input_.size() < kernel_size_ || input_[0].size() < kernel_size_){
         std::cout << "Input map smaller than kernel size" << std::endl;
         // TODO Refactor with exceptions

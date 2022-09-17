@@ -5,12 +5,14 @@ namespace wfc {
 
 Tile::Tile(std::unordered_map<int,int> state_distro_)//, Constraints* constraints)
 {
+    // Find the number of used states, and total for normalising
     num_states_ = state_distro_.size();
     float normaliser;
     for (auto& [id, count] : state_distro_){
         normaliser += count;
     }
 
+    // Starts uncollapsed and with no final state
     collapsed_ = false;
     final_state_ = std::nullopt;
 
@@ -28,17 +30,8 @@ Tile::Tile(std::unordered_map<int,int> state_distro_)//, Constraints* constraint
 }
 
 void Tile::UpdateState(std::unordered_map<int,float> constrained_states){
-    // Look at neigbours and update superposition
-    // Look at neighbours.
-    // Find patterns that still match
-    // Find what tile each would make this tile
-    // Sum counts and split probabilities.
-    //TODO this is quick hacky test
-    // if (neighbours_[0][0]){
-    //     state_[0]*=0.5;
-    // }
-    // constrained states needs to be normalised
-    // do we want to maintain that state_ always has entries for all state ids
+    // Update state with newly constrained states.
+    // TODO currently not correct, constraining strictly to one kernel when it actually lives in multiple.
     if (!collapsed_){
         // do the updating
         state_ = constrained_states;
@@ -55,7 +48,7 @@ void Tile::UpdateSumWeights(){
     for (auto const& [id, prob] : state_){
         sum_weights_ += prob;
     }
-    std::cout << "Sum weights (should be 1!)" << sum_weights_ << std::endl;
+    // TODO add assertion for sum_weights should be 1"
 }
 
 void Tile::UpdateEntropy(){
@@ -65,7 +58,6 @@ void Tile::UpdateEntropy(){
         for (auto const& [id, prob] : state_){
             entropy_ -= (prob * std::log(prob));
         }
-        std::cout << "Entropy Updated " << entropy_ << std::endl;
     }
 }
 

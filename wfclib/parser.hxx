@@ -14,10 +14,11 @@ class Parser
 private:
     int kernel_size_;
     std::vector<std::vector<int>> input_;
-    void CheckKernelSize();
-    std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> ParseLoop();
     std::unordered_map<int,int> state_distribution_;
     wfc::Constraints constraints_;
+    void CheckKernelSize();
+    std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> ParseLoop();
+
 public:
     Parser(std::vector<std::vector<int>> input, int kernel_size);
     void SetKernelSize(int kernel_size);
