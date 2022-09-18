@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <time.h> 
+#include <exception>
 
 #include "world_renderer.hxx"
 #include "wave_function_collapse.hxx"
@@ -36,8 +37,9 @@ namespace argparsing{
 
 int main(int argc, char const *argv[])
 {
-    if (argc != 3 && argc != 4){
-        std::cout << "Usage: " << argv[0] << " [width] [height] [[--wait]]" << std::endl;
+    std::string usage_string = "Usage: " + std::string(argv[0]) + " [wave width] [wave height] [kernel-size] [[--wait]]";
+    if (argc != 4 && argc != 5){
+        std::cerr << usage_string << std::endl;
         return 1;
     }
 
@@ -47,20 +49,39 @@ int main(int argc, char const *argv[])
     // Parse CLI arguments
     int w = argparsing::arg_to_int(argv[1]);
     int h = argparsing::arg_to_int(argv[2]);
+    int kernel_size = argparsing::arg_to_int(argv[3]);
+
+    if ((w % kernel_size) || (h % kernel_size)){
+        std::cerr << "Wave must be a multiple of kernel-size in all dimensions" << std::endl;
+        std::cerr << usage_string << std::endl;
+        return 1;
+    }
+
     bool wait_for_input = false;
-    if (argc == 4){
+    if (argc == 5){
         // If add more keyword arguments, loop over each passed pair and query for matching each expected
-        wait_for_input = argparsing::keyword_to_bool("--wait", argv[3]);
+        wait_for_input = argparsing::keyword_to_bool("--wait", argv[4]);
     }
 
     // Load source image as 2d int vector
-    std::vector<std::vector<int>> to_parse = {{1,0,1,0},{0,1,0,1},{1,0,1,0},{0,1,0,1}};
+    std::vector<std::vector<int>> to_parse = {{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1}};
 
     // Parse source image and extract information
-    wfc::Parser WaveParse(to_parse, 3);
-    WaveParse.Parse();
-    wfc::Constraints constraints = WaveParse.GetConstraints();
-    std::unordered_map<int,int> state_distro = WaveParse.GetStateDistribution();
+    wfc::Constraints constraints;
+    std::unordered_map<int,int> state_distro;
+    try {
+        wfc::Parser WaveParse(to_parse, kernel_size);
+        WaveParse.Parse();
+        constraints = WaveParse.GetConstraints();
+        state_distro = WaveParse.GetStateDistribution();
+    }
+    catch (std::invalid_argument& e){
+        std::cerr << e.what() << std::endl;
+        std::cerr << usage_string << std::endl;
+        return 1;
+    }
+    // Any other exceptions
+    
     
     // Setup renderer
     renderer::WorldRenderer WaveRend(w, h);

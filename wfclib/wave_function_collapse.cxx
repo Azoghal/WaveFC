@@ -75,9 +75,7 @@ int WaveFunctionCollapse::Collapse(bool wait_for_input){
     while(result == 0){
         if (renderer_){
             int_world = this->PrepareRenderWorld();
-            std::cout << "Thing 1" << std::endl;
             renderer_->SetWorld(int_world);
-            std::cout << "Thing 2" << std::endl;
             renderer_->PrintWorld();
             if (wait_for_input) {
                 std::cin.ignore();
@@ -135,9 +133,7 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     std::vector<std::vector<wfc::Tile*>> neighbours = updated_tile->GetNeighbours();
     for(auto row:neighbours){
         for(auto tile:row){
-            std::cout<< "Getting a neighbour's constrained statse" << std::endl;
             std::unordered_map<int,float> constrained_states = constraints_.GetConstrainedStates(*tile);
-            std::cout<< "Updating a neighbour" << std::endl;
             tile->UpdateState(constrained_states);
         }
     }

@@ -46,11 +46,13 @@ std::pair<std::unordered_map<int,int>, std::map<wfc::Pattern, int>> Parser::Pars
 }
 
 void Parser::CheckKernelSize(){
-    // Kernel smaller than input means that with looping boundaries, the same
-    // tile can appear more than once in the same kernel.
+    // Kernel must be smaller or same size as input
     if (input_.size() < kernel_size_ || input_[0].size() < kernel_size_){
-        std::cout << "Input map smaller than kernel size" << std::endl;
-        // TODO Refactor with exceptions
+        throw std::invalid_argument("Input map smaller than kernel size");
+    }
+    // Input must be multiple of Kernel in all dimensions
+    if (input_.size() % kernel_size_ || input_[0].size() % kernel_size_){
+        throw std::invalid_argument("Input map not multiple of  kernel size in all dimensions");
     }
 }
 
