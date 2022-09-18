@@ -33,12 +33,6 @@ void WorldRenderer::SetWorld(std::vector<std::vector<int>> map){
     // Set a non empty world.
     int w = map.size();
     int h = map[0].size();
-    for(auto row:map){
-        for(auto num:row){
-            std::cout << num;
-        }
-        std::cout << std::endl;
-    }
     world_map_ = map;
 }
 
