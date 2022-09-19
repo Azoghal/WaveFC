@@ -64,13 +64,13 @@ int main(int argc, char const *argv[])
     }
 
     // Load source image as 2d int vector
-    std::vector<std::vector<int>> to_parse = {{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1}};
+    // std::vector<std::vector<int>> to_parse = {{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1}};
 
     // Parse source image and extract information
     wfc::Constraints constraints;
     std::unordered_map<int,int> state_distro;
     try {
-        wfc::Parser WaveParse(to_parse, kernel_size);
+        wfc::Parser WaveParse("file.txt", kernel_size);
         WaveParse.Parse();
         constraints = WaveParse.GetConstraints();
         state_distro = WaveParse.GetStateDistribution();

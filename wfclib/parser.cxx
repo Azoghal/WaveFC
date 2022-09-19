@@ -1,15 +1,53 @@
 #include "parser.hxx"
 #include <iostream>
+#include <string>
+#include <sstream>
+#include <fstream>
 #include <cmath>
 #include <set>
 
 namespace wfc{
 
-Parser::Parser(std::vector<std::vector<int>> input, int kernel_size)
+Parser::Parser(std::string input_file, int kernel_size)
 {
-    input_ = input;
     kernel_size_ = kernel_size;
+    input_ = this->ReadInput(input_file);
     this->CheckKernelSize();
+}
+
+int Parser::InputCharToInt(char c){
+    std::string s;
+    s.push_back(c);
+    // Parse string arg to int
+    std::istringstream char_str(s);
+    int val;
+    if (char_str >> val)
+    {
+        return val;
+    }
+    return -1;
+}
+
+std::vector<std::vector<int>> Parser::ReadInput(std::string filename){
+
+    std::string line;
+    std::ifstream infile(filename);
+    //std::vector<std::vector<char>> char_world;
+    std::vector<std::vector<int>> int_world;
+    int next_id = 0;
+    std::map<char, int> char_map;
+
+    // Read characters and make int mapping?
+
+    while (std::getline(infile, line)) {
+        std::vector<int> row;
+        for (char& c: line) {
+            row.push_back(this->InputCharToInt(c));
+        }
+        int_world.push_back(row);
+    }
+
+    return int_world;
 }
 
 void Parser::Parse(){
