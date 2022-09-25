@@ -19,7 +19,7 @@ private:
     float entropy_;
     float sum_weights_;
     int num_patterns_;
-    std::vector<wfc::Pattern> patterns;
+    std::vector<wfc::Pattern> patterns_;
     std::map<wfc::Pattern, float> state_;
     std::vector<std::vector<Tile*>> neighbours_;
     int GetRandomState();

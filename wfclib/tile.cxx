@@ -8,10 +8,12 @@ Tile::Tile(std::map<wfc::Pattern,int> pattern_distro)//, Constraints* constraint
 {
     // Find the number of used states, and total for normalising
     num_patterns_ = pattern_distro.size();
+    patterns_ = std::vector<wfc::Pattern>();
 
     float normaliser;
-    for (auto& [id, count] : pattern_distro){
+    for (auto& [pattern, count] : pattern_distro){
         normaliser += count;
+        patterns_.push_back(pattern);
     }
 
     // Starts uncollapsed and with no final state
@@ -19,8 +21,8 @@ Tile::Tile(std::map<wfc::Pattern,int> pattern_distro)//, Constraints* constraint
     final_state_ = std::nullopt;
 
     sum_weights_ = 0;
-    for (auto& [id, count] : pattern_distro){
-        state_[id] = count/normaliser;
+    for (auto& [pattern, count] : pattern_distro){
+        state_[pattern] = count/normaliser;
         sum_weights_ += count/normaliser;
     }
 
@@ -47,7 +49,7 @@ void Tile::UpdateState(std::map<wfc::Pattern,float> constrained_states){
 
 void Tile::UpdateSumWeights(){
     sum_weights_ = 0;
-    for (auto const& [id, prob] : state_){
+    for (auto const& [pattern, prob] : state_){
         sum_weights_ += prob;
     }
     // TODO add assertion for sum_weights should be 1"
@@ -57,7 +59,7 @@ void Tile::UpdateEntropy(){
     // - sum (p(x)log(px))
     if(!collapsed_){
         entropy_ = 0;
-        for (auto const& [id, prob] : state_){
+        for (auto const& [pattern, prob] : state_){
             entropy_ -= (prob * std::log(prob));
         }
     }
@@ -82,7 +84,8 @@ int Tile::CollapseState(){
         return -1;
     }
     int r_state =  this->GetRandomState();
-    final_state_ = patterns[r_state];
+    std::cout << "random index: " << r_state << std::endl;
+    final_state_ = patterns_[r_state];
     collapsed_ = true;
     entropy_ = 0;
     std::cout << "Collapsing to state " << r_state << std::endl;

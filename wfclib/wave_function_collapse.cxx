@@ -11,6 +11,9 @@ WaveFunctionCollapse::WaveFunctionCollapse(int p_width, int p_height, int tile_s
     p_height_ = p_height;
     t_width_ = p_width/tile_size;
     t_height_ = p_height/tile_size;
+    std::cout << "WaveFunction collapse of " << t_width_ << "x" << t_height_ << " tiles, ";
+    std::cout << "of size " << tile_size << "x" << tile_size << " pixels, ";
+    std::cout << "giving a canvas size of " << p_width_ << "x" << p_height_ << std::endl;
     tile_size_ = tile_size;
     constraints_ = constraints;
     pattern_distro_ = pattern_distro;
@@ -37,7 +40,6 @@ void WaveFunctionCollapse::SetupTiles(){
             }
             world_[x][y].SetNeighbours(neighbours);
             world_[x][y].UpdateEntropy();
-            
         }
     }
 }
@@ -143,16 +145,16 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
 
 std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
     std::vector<std::vector<int>> int_world(p_width_, std::vector<int>(p_height_, -1));
-    // Change this to getting subgrid from pattern
     for(int j=0; j<t_height_; ++j){
         for(int i=0; i<t_width_; ++i){
             if(world_[i][j].IsCollapsed()){
-                for (int y=0; y<p_height_; ++y){
-                    for (int x=0; x<p_width_; ++x){
+                wfc::Pattern p = world_[i][j].final_state_.value();
+                std::vector<std::vector<int>> int_pattern = p.GetPattern();
+                for (int y=0; y<tile_size_; ++y){
+                    for (int x=0; x<tile_size_; ++x){
                         int yy = y + j*tile_size_;
                         int xx = x + i*tile_size_;
-                        wfc::Pattern p = world_[i][j].final_state_.value();
-                        int_world[xx][yy] = p.GetPattern()[i][j];
+                        int_world[xx][yy] = int_pattern[x][y];
                     }
                 }
             }
