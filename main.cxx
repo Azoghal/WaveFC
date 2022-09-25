@@ -68,10 +68,12 @@ int main(int argc, char const *argv[])
 
     // Parse source image and extract information
     wfc::Constraints constraints;
+    std::map<wfc::Pattern, int> pattern_distro;
     try {
         wfc::Parser WaveParse("file.txt", kernel_size);
         WaveParse.Parse();
         constraints = WaveParse.GetConstraints();
+        pattern_distro = WaveParse.GetPatternDistro();
     }
     catch (std::invalid_argument& e){
         std::cerr << e.what() << std::endl;
@@ -85,7 +87,7 @@ int main(int argc, char const *argv[])
     renderer::WorldRenderer WaveRend(w, h);
 
     // Setup WFC and begin collapse
-    wfc::WaveFunctionCollapse WaveFC(w, h, constraints);
+    wfc::WaveFunctionCollapse WaveFC(w, h, kernel_size, constraints, pattern_distro);
     WaveFC.AddRenderer(&WaveRend);
     WaveFC.Collapse(wait_for_input);
     return 0;

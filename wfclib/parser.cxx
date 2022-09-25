@@ -51,8 +51,9 @@ std::vector<std::vector<int>> Parser::ReadInput(std::string filename){
 }
 
 void Parser::Parse(){
-    std::map<wfc::Pattern, int> parsed = this->ParseLoop();
-    constraints_ =  wfc::Constraints(parsed);
+    std::map<wfc::Pattern, int> pattern_distro = this->ParseLoop();
+    pattern_distro_ = pattern_distro;
+    constraints_ =  wfc::Constraints(pattern_distro_);
 }
 
 std::map<wfc::Pattern, int> Parser::ParseLoop(){
@@ -101,5 +102,10 @@ void Parser::SetKernelSize(int kernel_size){
 wfc::Constraints Parser::GetConstraints(){
     return constraints_;
 }
+
+std::map<wfc::Pattern,int> Parser::GetPatternDistro(){
+    return pattern_distro_;
+}
+
 
 } // namespace wfc

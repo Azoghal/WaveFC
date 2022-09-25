@@ -1,14 +1,16 @@
 #include "tile.hxx"
 #include <math.h>
 
+
 namespace wfc {
 
-Tile::Tile(std::unordered_map<int,int> state_distro_)//, Constraints* constraints)
+Tile::Tile(std::map<wfc::Pattern,int> pattern_distro)//, Constraints* constraints)
 {
     // Find the number of used states, and total for normalising
-    num_states_ = state_distro_.size();
+    num_patterns_ = pattern_distro.size();
+
     float normaliser;
-    for (auto& [id, count] : state_distro_){
+    for (auto& [id, count] : pattern_distro){
         normaliser += count;
     }
 
@@ -17,7 +19,7 @@ Tile::Tile(std::unordered_map<int,int> state_distro_)//, Constraints* constraint
     final_state_ = std::nullopt;
 
     sum_weights_ = 0;
-    for (auto& [id, count] : state_distro_){
+    for (auto& [id, count] : pattern_distro){
         state_[id] = count/normaliser;
         sum_weights_ += count/normaliser;
     }
@@ -29,7 +31,7 @@ Tile::Tile(std::unordered_map<int,int> state_distro_)//, Constraints* constraint
     this->UpdateEntropy();
 }
 
-void Tile::UpdateState(std::unordered_map<int,float> constrained_states){
+void Tile::UpdateState(std::map<wfc::Pattern,float> constrained_states){
     // Update state with newly constrained states.
     // TODO currently not correct, constraining strictly to one kernel when it actually lives in multiple.
     if (!collapsed_){
@@ -39,7 +41,7 @@ void Tile::UpdateState(std::unordered_map<int,float> constrained_states){
         this->UpdateSumWeights();
     }
     else{
-        state_ = std::unordered_map<int,float>();
+        state_ = std::map<wfc::Pattern,float>();
     }
 }
 
@@ -80,7 +82,7 @@ int Tile::CollapseState(){
         return -1;
     }
     int r_state =  this->GetRandomState();
-    final_state_ = r_state;
+    final_state_ = patterns[r_state];
     collapsed_ = true;
     entropy_ = 0;
     std::cout << "Collapsing to state " << r_state << std::endl;
@@ -93,7 +95,7 @@ int Tile::GetRandomState(){
     // so we can avoid renormalizing after each updated.
     //float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float r = static_cast <float> (rand()) / (static_cast <float>(RAND_MAX) /sum_weights_);
-    for(int i=0; i<num_states_; ++i) {
+    for(int i=0; i<num_patterns_; ++i) {
         if(r < state_[i])
             return i;
         r -= state_[i];

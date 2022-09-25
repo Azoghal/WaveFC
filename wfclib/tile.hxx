@@ -7,27 +7,29 @@
 #include <vector>
 #include <optional>
 
+#include "pattern.hxx"
+
 namespace wfc
 {
 
 class Tile
 {
 private:
-    int num_states_;
     bool collapsed_;
     float entropy_;
     float sum_weights_;
-    std::unordered_map<int,int> state_distro_;
-    std::unordered_map<int, float> state_;
+    int num_patterns_;
+    std::vector<wfc::Pattern> patterns;
+    std::map<wfc::Pattern, float> state_;
     std::vector<std::vector<Tile*>> neighbours_;
     int GetRandomState();
     inline void UpdateSumWeights();
 public:
-    Tile(std::unordered_map<int,int> start_distro);
-    std::optional<int> final_state_;
+    Tile(std::map<wfc::Pattern, int> pattern_distro);
+    std::optional<wfc::Pattern> final_state_;
     int CollapseState();
     void UpdateEntropy();
-    void UpdateState(std::unordered_map<int,float> constrained_states);
+    void UpdateState(std::map<wfc::Pattern,float> constrained_states);
     void SetNeighbours(std::vector<std::vector<Tile*>> neighbours);
     std::vector<std::vector<Tile*>> GetNeighbours();
     float GetEntropy();

@@ -4,30 +4,34 @@
 
 namespace wfc {
     
-WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, Constraints constraints)
+WaveFunctionCollapse::WaveFunctionCollapse(int p_width, int p_height, int tile_size, Constraints constraints, std::map<wfc::Pattern,int> pattern_distro)
 {
     std::cout << "Constructing wave_function_collapse object" << std::endl;
-    width_ = width;
-    height_ = height;
+    p_width_ = p_width;
+    p_height_ = p_height;
+    t_width_ = p_width/tile_size;
+    t_height_ = p_height/tile_size;
+    tile_size_ = tile_size;
     constraints_ = constraints;
+    pattern_distro_ = pattern_distro;
     this->SetupTiles();
     lowest_tile_ = nullptr;
     renderer_ = nullptr;
 }
 
 void WaveFunctionCollapse::SetupTiles(){
-    world_ = std::vector<std::vector<Tile>>(width_, std::vector<Tile>(height_, Tile(state_distro_)));
+    world_ = std::vector<std::vector<Tile>>(t_width_, std::vector<Tile>(t_height_, Tile(pattern_distro_)));
     // set neighbours of tiles
     // calculate all their entropies and store minimum
     // options: loop neighbours around
     // setup fake neighbours
-    for(int y=0; y<height_; ++y){
-        for(int x=0; x<width_; ++x){
+    for(int y=0; y<t_height_; ++y){
+        for(int x=0; x<t_width_; ++x){
             std::vector<std::vector<Tile*>> neighbours(3,std::vector<Tile*>(3,nullptr));
             for (int j=-1; j<2; ++j){
                 for (int i=-1; i<2; ++i){
-                    int xx = (x + i + width_) % width_;
-                    int yy = (y + j + height_) % height_;
+                    int xx = (x + i + t_width_) % t_width_;
+                    int yy = (y + j + t_height_) % t_height_;
                     neighbours[i+1][j+1] = &world_[xx][yy];
                 }
             }
@@ -131,21 +135,26 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     std::vector<std::vector<wfc::Tile*>> neighbours = updated_tile->GetNeighbours();
     for(auto row:neighbours){
         for(auto tile:row){
-            std::unordered_map<int,float> constrained_states = constraints_.GetConstrainedStates(*tile);
+            std::map<wfc::Pattern,float> constrained_states = constraints_.GetConstrainedStates(*tile);
             tile->UpdateState(constrained_states);
         }
     }
 }
 
 std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
-    std::vector<std::vector<int>> int_world(width_, std::vector<int>(height_, 0));
-    for(int y=0; y<height_; ++y){
-        for(int x=0; x<width_; ++x){
-            if(world_[x][y].IsCollapsed()){
-                int_world[x][y] = world_[x][y].final_state_.value();
-            }
-            else{
-                int_world[x][y] = -1;
+    std::vector<std::vector<int>> int_world(p_width_, std::vector<int>(p_height_, -1));
+    // Change this to getting subgrid from pattern
+    for(int j=0; j<t_height_; ++j){
+        for(int i=0; i<t_width_; ++i){
+            if(world_[i][j].IsCollapsed()){
+                for (int y=0; y<p_height_; ++y){
+                    for (int x=0; x<p_width_; ++x){
+                        int yy = y + j*tile_size_;
+                        int xx = x + i*tile_size_;
+                        wfc::Pattern p = world_[i][j].final_state_.value();
+                        int_world[xx][yy] = p.GetPattern()[i][j];
+                    }
+                }
             }
         }
     }

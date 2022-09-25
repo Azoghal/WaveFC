@@ -15,19 +15,21 @@ namespace wfc{
 class WaveFunctionCollapse
 {
 private:
-    int width_, height_;
+    int t_width_, t_height_;
+    int p_width_, p_height_;
+    int tile_size_;
     int num_states_; // TODO check if needed
     std::vector<std::vector<Tile>> world_;
     Tile* lowest_tile_;
     Constraints constraints_;
-    std::unordered_map<int,int> state_distro_;
+    std::map<wfc::Pattern,int> pattern_distro_;
     renderer::WorldRenderer* renderer_;
     void SetupTiles();
     int FindLowestEntropy();
     void Propagate(wfc::Tile* updated_tile);
     std::vector<std::vector<int>> PrepareRenderWorld();
 public:
-    WaveFunctionCollapse(int width, int height, wfc::Constraints constraints);
+    WaveFunctionCollapse(int width, int height, int tile_size, wfc::Constraints constraints, std::map<wfc::Pattern,int> pattern_distro);
     int CollapseOnce();
     int Collapse(bool wait_for_input);
     void AddRenderer(renderer::WorldRenderer* renderer);
