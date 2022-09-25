@@ -4,14 +4,12 @@
 
 namespace wfc {
     
-WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, Constraints constraints, std::unordered_map<int,int> state_distro)
+WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, Constraints constraints)
 {
     std::cout << "Constructing wave_function_collapse object" << std::endl;
     width_ = width;
     height_ = height;
     constraints_ = constraints;
-    state_distro_ = state_distro;
-    num_states_ = state_distro.size();
     this->SetupTiles();
     lowest_tile_ = nullptr;
     renderer_ = nullptr;

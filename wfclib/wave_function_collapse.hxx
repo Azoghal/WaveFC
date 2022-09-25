@@ -27,7 +27,7 @@ private:
     void Propagate(wfc::Tile* updated_tile);
     std::vector<std::vector<int>> PrepareRenderWorld();
 public:
-    WaveFunctionCollapse(int width, int height, wfc::Constraints constraints, std::unordered_map<int,int> state_distro);
+    WaveFunctionCollapse(int width, int height, wfc::Constraints constraints);
     int CollapseOnce();
     int Collapse(bool wait_for_input);
     void AddRenderer(renderer::WorldRenderer* renderer);
