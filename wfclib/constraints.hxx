@@ -6,17 +6,20 @@
 #include <unordered_map>
 #include <map>
 #include <vector>
+#include <set>
+#include <algorithm>
 
 namespace wfc{
 
 class Constraints
 {
 private:
-    std::map<wfc::Pattern, int> patterns_;
+    std::map<int, std::vector<std::set<int>>> constraints_;
 public:
     Constraints();
-    Constraints(std::map<wfc::Pattern, int> patterns);
-    std::map<wfc::Pattern, float>  GetConstrainedStates(wfc::Tile tile);
+    Constraints(std::map<int, std::vector<std::set<int>>> constraints);
+    std::vector<std::set<int>> GetConstrainedSets(int pattern_id);
+    std::vector<std::set<int>> BuildConstrainedSets(std::set<int> pattern_ids);
 };
 
 } // namespace wfc

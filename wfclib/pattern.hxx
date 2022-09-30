@@ -9,6 +9,7 @@ class Pattern
 {
 private:
     int size_;
+    int id_;
     std::vector<std::vector<int>> pattern_;
 public:
     Pattern();

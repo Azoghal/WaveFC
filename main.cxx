@@ -37,8 +37,8 @@ namespace argparsing{
 
 int main(int argc, char const *argv[])
 {
-    std::string usage_string = "Usage: " + std::string(argv[0]) + " [wave width] [wave height] [kernel-size] [[--wait]]";
-    if (argc != 4 && argc != 5){
+    std::string usage_string = "Usage: " + std::string(argv[0]) + " [parse source] [wave width] [wave height] [kernel-size] [[--wait]]";
+    if (argc != 5 && argc != 6){
         std::cerr << usage_string << std::endl;
         return 1;
     }
@@ -47,9 +47,10 @@ int main(int argc, char const *argv[])
     srand(time(NULL));
 
     // Parse CLI arguments
-    int w = argparsing::arg_to_int(argv[1]);
-    int h = argparsing::arg_to_int(argv[2]);
-    int kernel_size = argparsing::arg_to_int(argv[3]);
+    std::string filename = argv[1];
+    int w = argparsing::arg_to_int(argv[2]);
+    int h = argparsing::arg_to_int(argv[3]);
+    int kernel_size = argparsing::arg_to_int(argv[4]);
 
     if ((w % kernel_size) || (h % kernel_size)){
         std::cerr << "Wave must be a multiple of kernel-size in all dimensions" << std::endl;
@@ -58,9 +59,9 @@ int main(int argc, char const *argv[])
     }
 
     bool wait_for_input = false;
-    if (argc == 5){
+    if (argc == 6){
         // If add more keyword arguments, loop over each passed pair and query for matching each expected
-        wait_for_input = argparsing::keyword_to_bool("--wait", argv[4]);
+        wait_for_input = argparsing::keyword_to_bool("--wait", argv[5]);
     }
 
     // Load source image as 2d int vector
@@ -70,7 +71,7 @@ int main(int argc, char const *argv[])
     wfc::Constraints constraints;
     std::map<wfc::Pattern, int> pattern_distro;
     try {
-        wfc::Parser WaveParse("file.txt", kernel_size);
+        wfc::Parser WaveParse(filename, kernel_size);
         WaveParse.Parse();
         constraints = WaveParse.GetConstraints();
         pattern_distro = WaveParse.GetPatternDistro();

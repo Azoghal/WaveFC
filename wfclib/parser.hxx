@@ -16,9 +16,12 @@ private:
     std::vector<std::vector<int>> input_;
     wfc::Constraints constraints_;
     std::map<wfc::Pattern, int> pattern_distro_;
+    std::map<wfc::Pattern, int> pattern_ids_;
+    int next_pattern_id_;
     void CheckKernelSize();
     int InputCharToInt(char c);
-    std::map<wfc::Pattern, int> ParseLoop();
+    void ParseLoop();
+    int GetPatternID(wfc::Pattern pattern);
 
 public:
     Parser(std::string input_file, int kernel_size);

@@ -135,10 +135,11 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     // Find neighbours that need updated superposition
     std::cout << "Propogating changes" << std::endl;
     std::vector<std::vector<wfc::Tile*>> neighbours = updated_tile->GetNeighbours();
+    // Do queue based bfs propagation
     for(auto row:neighbours){
         for(auto tile:row){
-            std::map<wfc::Pattern,float> constrained_states = constraints_.GetConstrainedStates(*tile);
-            tile->UpdateState(constrained_states);
+            //std::map<wfc::Pattern,float> constrained_states = constraints_.GetConstrainedStates(*tile);
+            //tile->UpdateState(constrained_states);
         }
     }
 }

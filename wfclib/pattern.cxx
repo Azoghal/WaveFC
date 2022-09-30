@@ -39,11 +39,14 @@ std::vector<std::vector<int>> Pattern::GetPattern(){
 }
 
 const bool Pattern::operator<(const Pattern& rhs) const{
+    // Comparison allows for this to be used as a std::map key
     if (size_ != rhs.size_){
         // TODO raise exception
         return false;
     }
     return pattern_ < rhs.pattern_;
+
+    // return id_ < rhs.id_;
 }
 
 } // namespace wfc
