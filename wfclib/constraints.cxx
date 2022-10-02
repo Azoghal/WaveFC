@@ -9,7 +9,7 @@ Constraints::Constraints(){
     
 }
 
-Constraints::Constraints(std::map<int, std::vector<std::set<int>>> constraints){
+Constraints::Constraints(std::map<int, std::vector<std::map<int,int>>> constraints){
     // Pattern ID to 4 directions worth of sets
     // Right Bottom Left Top
     constraints_ = constraints;

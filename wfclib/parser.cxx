@@ -72,7 +72,7 @@ void Parser::ParseLoop(){
     // Find all kernels (for now ignoring symmetry and rotations)
     //std::unordered_map<int, int> states_observed;
     std::map<wfc::Pattern, int> pattern_distro;
-    std::map<int,std::vector<std::set<int>>> constraints;
+    std::map<int,std::vector<std::map<int,int>>> constraints;
     std::vector<std::vector<int>> pattern_id_world;
     int in_height = input_.size();
     int in_width = input_[0].size();
@@ -100,13 +100,57 @@ void Parser::ParseLoop(){
         pattern_id_world.push_back(pattern_id_row);
     }
 
-    std::cout << "Pattern ID Map" << std::endl;
-    for (auto& row: pattern_id_world){
-        for (auto& i: row){
-            std::cout << i << " ";
-        }
-        std::cout << std::endl;
+    int pattern_world_width = pattern_id_world.size();
+    int pattern_world_height = pattern_id_world[0].size();
+
+    for (int p_id=1; p_id < next_pattern_id_; ++p_id){
+        constraints[p_id] = std::vector<std::map<int,int>> (4,std::map<int,int>());
     }
+
+
+    for (int y=0; y<pattern_world_height; ++y){
+         for (int x=0; x<pattern_world_width; ++x){
+            int centre_id = pattern_id_world[x][y];
+            int left = (x - 1 + pattern_world_width) % pattern_world_width;
+            int right = (x + 1 + pattern_world_width) % pattern_world_width;
+            int top = (y - 1 + pattern_world_height) % pattern_world_height;
+            int bottom = (y + 1 + pattern_world_height) % pattern_world_height;
+            constraints[centre_id][0][pattern_id_world[right][0]] += 1;
+            constraints[centre_id][1][pattern_id_world[0][top]] += 1;
+            constraints[centre_id][2][pattern_id_world[left][0]] += 1;
+            constraints[centre_id][3][pattern_id_world[0][bottom]] += 1;
+        }
+    }
+
+    // DIAGONAL NEIGHBOURS.
+    // for (int y=0; y<pattern_world_height; ++y){
+    //     for (int x=0; x<pattern_world_width; ++x){
+    //         for (int i=-1; i<2; ++i){
+    //             for (int j=-1; j<2; ++j){
+    //                 if (i || j){
+    //                 // Boundary looping
+    //                     int xx = (x + i + pattern_world_width) % pattern_world_width;
+    //                     int yy = (y + j + pattern_world_height) % pattern_world_height;
+    //                     if (! (y || x)){
+    //                         std::cout << xx << "," << yy << std::endl;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // check map
+    // std::vector<std::string> directions = {"Right", "Top", "Left", "Bottom"};
+    // for (auto& [p_id, vec] : constraints){
+    //     int direction = 0;
+    //     for (auto& m : vec){
+    //         for (auto& [n_id, n_count] : m){
+    //             std::cout << p_id << " has " << n_count << "x" << n_id << "to the " << directions[direction] << std::endl;
+    //         }
+    //         direction++;
+    //     }
+    // }
+
     pattern_distro_ = pattern_distro;
     constraints_ = constraints;
 }

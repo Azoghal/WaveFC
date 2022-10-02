@@ -14,10 +14,10 @@ namespace wfc{
 class Constraints
 {
 private:
-    std::map<int, std::vector<std::set<int>>> constraints_;
+    std::map<int, std::vector<std::map<int,int>>> constraints_;
 public:
     Constraints();
-    Constraints(std::map<int, std::vector<std::set<int>>> constraints);
+    Constraints(std::map<int, std::vector<std::map<int,int>>> constraints);
     std::vector<std::set<int>> GetConstrainedSets(int pattern_id);
     std::vector<std::set<int>> BuildConstrainedSets(std::set<int> pattern_ids);
 };
