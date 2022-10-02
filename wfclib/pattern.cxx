@@ -38,6 +38,10 @@ std::vector<std::vector<int>> Pattern::GetPattern(){
     return pattern_;
 }
 
+int Pattern::GetPatternID(){
+    return id_;
+}
+
 const bool Pattern::operator<(const Pattern& rhs) const{
     // Comparison allows for this to be used as a std::map key
     if (size_ != rhs.size_){

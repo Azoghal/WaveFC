@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <optional>
+#include <set>
 
 #include "pattern.hxx"
 
@@ -29,7 +30,7 @@ public:
     std::optional<wfc::Pattern> final_state_;
     int CollapseState();
     void UpdateEntropy();
-    void UpdateState(std::map<wfc::Pattern,float> constrained_states);
+    void UpdateState(std::map<int,int> impossible_states);
     void SetNeighbours(std::vector<Tile*> neighbours);
     std::vector<Tile*> GetNeighbours();
     float GetEntropy();

@@ -21,7 +21,7 @@ private:
     void CheckKernelSize();
     int InputCharToInt(char c);
     void ParseLoop();
-    int GetPatternID(wfc::Pattern pattern);
+    int GeneratePatternID(wfc::Pattern pattern);
 public:
     Parser(std::string input_file, int kernel_size);
     void SetKernelSize(int kernel_size);

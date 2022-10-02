@@ -152,6 +152,10 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     //          reduce set
     //          add neighbours to queue
     // Do queue based bfs propagations
+    
+    for (int i=0; i < 4; ++i){
+        
+    }
     for(auto tile:neighbours){
         //std::map<wfc::Pattern,float> constrained_states = constraints_.GetConstrainedStates(*tile);
         //tile->UpdateState(constrained_states);

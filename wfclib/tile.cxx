@@ -33,12 +33,13 @@ Tile::Tile(std::map<wfc::Pattern,int> pattern_distro)//, Constraints* constraint
     this->UpdateEntropy();
 }
 
-void Tile::UpdateState(std::map<wfc::Pattern,float> constrained_states){
+void Tile::UpdateState(std::map<int,int> impossible_states){
+    // Maybe should be a map of pattern id to the now dissallowed count...
     // Update state with newly constrained states.
     // TODO currently not correct, constraining strictly to one kernel when it actually lives in multiple.
     if (!collapsed_){
         // do the updating
-        state_ = constrained_states;
+        //state_ = constrained_states;
         this->UpdateEntropy();
         this->UpdateSumWeights();
     }

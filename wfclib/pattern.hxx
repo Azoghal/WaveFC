@@ -18,6 +18,7 @@ public:
     std::vector<Pattern> GenerateRotations();
     std::vector<Pattern> GenerateReflections();
     std::vector<std::vector<int>> GetPattern();
+    int GetPatternID();
     const bool operator<(Pattern const& rhs) const;
 };
 
