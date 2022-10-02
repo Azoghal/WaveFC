@@ -115,10 +115,10 @@ void Parser::ParseLoop(){
             int right = (x + 1 + pattern_world_width) % pattern_world_width;
             int top = (y - 1 + pattern_world_height) % pattern_world_height;
             int bottom = (y + 1 + pattern_world_height) % pattern_world_height;
-            constraints[centre_id][0][pattern_id_world[right][0]] += 1;
-            constraints[centre_id][1][pattern_id_world[0][top]] += 1;
-            constraints[centre_id][2][pattern_id_world[left][0]] += 1;
-            constraints[centre_id][3][pattern_id_world[0][bottom]] += 1;
+            constraints[centre_id][0][pattern_id_world[right][y]] += 1;
+            constraints[centre_id][1][pattern_id_world[x][top]] += 1;
+            constraints[centre_id][2][pattern_id_world[left][y]] += 1;
+            constraints[centre_id][3][pattern_id_world[x][bottom]] += 1;
         }
     }
 

@@ -69,11 +69,11 @@ float Tile::GetEntropy(){
     return entropy_;
 }
 
-void Tile::SetNeighbours(std::vector<std::vector<Tile*>> neighbours){
+void Tile::SetNeighbours(std::vector<Tile*> neighbours){
     neighbours_ = neighbours;
 }
 
-std::vector<std::vector<Tile*>> Tile::GetNeighbours(){
+std::vector<Tile*> Tile::GetNeighbours(){
     return neighbours_;
 }
 

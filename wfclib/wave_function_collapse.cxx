@@ -30,14 +30,23 @@ void WaveFunctionCollapse::SetupTiles(){
     // setup fake neighbours
     for(int y=0; y<t_height_; ++y){
         for(int x=0; x<t_width_; ++x){
-            std::vector<std::vector<Tile*>> neighbours(3,std::vector<Tile*>(3,nullptr));
-            for (int j=-1; j<2; ++j){
-                for (int i=-1; i<2; ++i){
-                    int xx = (x + i + t_width_) % t_width_;
-                    int yy = (y + j + t_height_) % t_height_;
-                    neighbours[i+1][j+1] = &world_[xx][yy];
-                }
-            }
+            //std::vector<std::vector<Tile*>> neighbours(3,std::vector<Tile*>(3,nullptr));
+            std::vector<Tile*> neighbours;
+            int left = (x - 1 + t_width_) % t_width_;
+            int right = (x + 1 + t_width_) % t_width_;
+            int top = (y - 1 + t_height_) % t_height_;
+            int bottom = (y + 1 + t_height_) % t_height_;
+            // for (int j=-1; j<2; ++j){
+            //     for (int i=-1; i<2; ++i){
+            //         int xx = (x + i + t_width_) % t_width_;
+            //         int yy = (y + j + t_height_) % t_height_;
+            //         neighbours[i+1][j+1] = &world_[xx][yy];
+            //     }
+            // }
+            neighbours.push_back(&world_[right][y]);
+            neighbours.push_back(&world_[x][top]);
+            neighbours.push_back(&world_[left][y]);
+            neighbours.push_back(&world_[x][bottom]);
             world_[x][y].SetNeighbours(neighbours);
             world_[x][y].UpdateEntropy();
         }
@@ -134,13 +143,18 @@ int WaveFunctionCollapse::FindLowestEntropy(){
 void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     // Find neighbours that need updated superposition
     std::cout << "Propogating changes" << std::endl;
-    std::vector<std::vector<wfc::Tile*>> neighbours = updated_tile->GetNeighbours();
-    // Do queue based bfs propagation
-    for(auto row:neighbours){
-        for(auto tile:row){
-            //std::map<wfc::Pattern,float> constrained_states = constraints_.GetConstrainedStates(*tile);
-            //tile->UpdateState(constrained_states);
-        }
+    std::vector<wfc::Tile*> neighbours = updated_tile->GetNeighbours();
+    // Add neighbours of changed tile to queue.
+    // Loop while queue not empty:
+    //     Pop tile
+    //     Get neighbours
+    //     Calculate if set must be reduced
+    //          reduce set
+    //          add neighbours to queue
+    // Do queue based bfs propagations
+    for(auto tile:neighbours){
+        //std::map<wfc::Pattern,float> constrained_states = constraints_.GetConstrainedStates(*tile);
+        //tile->UpdateState(constrained_states);
     }
 }
 

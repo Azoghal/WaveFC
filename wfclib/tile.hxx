@@ -21,7 +21,7 @@ private:
     int num_patterns_;
     std::vector<wfc::Pattern> patterns_;
     std::map<wfc::Pattern, float> state_;
-    std::vector<std::vector<Tile*>> neighbours_;
+    std::vector<Tile*> neighbours_;
     int GetRandomState();
     inline void UpdateSumWeights();
 public:
@@ -30,8 +30,8 @@ public:
     int CollapseState();
     void UpdateEntropy();
     void UpdateState(std::map<wfc::Pattern,float> constrained_states);
-    void SetNeighbours(std::vector<std::vector<Tile*>> neighbours);
-    std::vector<std::vector<Tile*>> GetNeighbours();
+    void SetNeighbours(std::vector<Tile*> neighbours);
+    std::vector<Tile*> GetNeighbours();
     float GetEntropy();
     bool IsCollapsed();
 };
