@@ -71,7 +71,7 @@ void Parser::Parse(){
 void Parser::ParseLoop(){
     // Find all kernels (for now ignoring symmetry and rotations)
     //std::unordered_map<int, int> states_observed;
-    std::map<wfc::Pattern, int> pattern_distro;
+    std::map<int, wfc::Pattern> patterns;
     std::map<int,std::vector<std::map<int,int>>> constraints;
     std::vector<std::vector<int>> pattern_id_world;
     int in_height = input_.size();
@@ -94,7 +94,7 @@ void Parser::ParseLoop(){
             }
             // Increase count of pattern appearence, find its unique id, add to pattern world
             int pattern_id = this->GeneratePatternID(kernel);
-            pattern_distro[wfc::Pattern(pattern_id,kernel)]++;
+            patterns_[pattern_id] = wfc::Pattern(pattern_id,kernel);
             pattern_id_row.push_back(pattern_id);
         }
         pattern_id_world.push_back(pattern_id_row);
@@ -151,7 +151,7 @@ void Parser::ParseLoop(){
     //     }
     // }
 
-    pattern_distro_ = pattern_distro;
+    patterns_ = patterns;
     constraints_ = constraints;
 }
 
@@ -176,8 +176,8 @@ wfc::Constraints Parser::GetConstraints(){
     return constraints_;
 }
 
-std::map<wfc::Pattern,int> Parser::GetPatternDistro(){
-    return pattern_distro_;
+std::map<int, wfc::Pattern> Parser::GetPatterns(){
+    return patterns_;
 }
 
 

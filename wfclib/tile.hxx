@@ -26,7 +26,7 @@ private:
     int GetRandomState();
     inline void UpdateSumWeights();
 public:
-    Tile(std::map<wfc::Pattern, int> pattern_distro);
+    Tile(std::map<int,int> unconstrained, std::map<int,wfc::Pattern> patterns);
     std::optional<wfc::Pattern> final_state_;
     int CollapseState();
     void UpdateEntropy();

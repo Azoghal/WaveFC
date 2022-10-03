@@ -15,9 +15,11 @@ class Constraints
 {
 private:
     std::map<int, std::vector<std::map<int,int>>> constraints_;
+    std::map<int,int> unconstrained_;
 public:
     Constraints();
     Constraints(std::map<int, std::vector<std::map<int,int>>> constraints);
+    std::map<int,int> GetUnconstrained();
     std::vector<std::map<int,int>> GetConstrainedSets(int pattern_id);
     std::vector<std::map<int,int>> BuildConstrainedSets(std::vector<int> pattern_ids);
 };

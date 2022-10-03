@@ -4,18 +4,15 @@
 
 namespace wfc {
 
-Tile::Tile(std::map<wfc::Pattern,int> pattern_distro)//, Constraints* constraints)
+Tile::Tile(std::map<int,int> unconstrained_state, std::map<int,wfc::Pattern> patterns)//, Constraints* constraints)
 {
     // Find the number of used states, and total for normalising
-    num_patterns_ = pattern_distro.size();
-    patterns_ = std::map<int, wfc::Pattern>();
+    num_patterns_ = unconstrained_state.size();
+    patterns_ = patterns;
 
-    //float normaliser;
     sum_weights_ = 0;
-    for (auto& [pattern, count] : pattern_distro){
+    for (auto& [p_id, count] : unconstrained_state){
         sum_weights_ += count;
-        int p_id = pattern.GetPatternID();
-        patterns_[p_id] = pattern;
         state_[p_id] = count;
     }
 
@@ -32,6 +29,11 @@ void Tile::UpdateState(std::map<int,int> constrained_states){
     if (!collapsed_){
         // do the updating
         //state_ = constrained_states;
+        for (auto& [key,val] : constrained_states){
+            if (state_[key] < val){
+                state_[key] = val;
+            }
+        }
         this->UpdateEntropy();
         this->UpdateSumWeights();
     }

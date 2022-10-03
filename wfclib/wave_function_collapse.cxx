@@ -4,7 +4,7 @@
 
 namespace wfc {
     
-WaveFunctionCollapse::WaveFunctionCollapse(int p_width, int p_height, int tile_size, Constraints constraints, std::map<wfc::Pattern,int> pattern_distro)
+WaveFunctionCollapse::WaveFunctionCollapse(int p_width, int p_height, int tile_size, Constraints constraints, std::map<int,wfc::Pattern> patterns)
 {
     std::cout << "Constructing wave_function_collapse object" << std::endl;
     p_width_ = p_width;
@@ -16,14 +16,16 @@ WaveFunctionCollapse::WaveFunctionCollapse(int p_width, int p_height, int tile_s
     std::cout << "giving a canvas size of " << p_width_ << "x" << p_height_ << std::endl;
     tile_size_ = tile_size;
     constraints_ = constraints;
-    pattern_distro_ = pattern_distro;
+    patterns_ = patterns;
     this->SetupTiles();
     lowest_tile_ = nullptr;
     renderer_ = nullptr;
 }
 
 void WaveFunctionCollapse::SetupTiles(){
-    world_ = std::vector<std::vector<Tile>>(t_width_, std::vector<Tile>(t_height_, Tile(pattern_distro_)));
+    // TODO is pattern distribution neccessary? how about doing constraints_.
+    
+    world_ = std::vector<std::vector<Tile>>(t_width_, std::vector<Tile>(t_height_, Tile(constraints_.GetUnconstrained(), patterns_)));
     // set neighbours of tiles
     // calculate all their entropies and store minimum
     // options: loop neighbours around
@@ -159,7 +161,7 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
         wfc::Tile* neighbour = neighbours[i];
         std::map<int,int> constrained_direction = constrained_states[i];
         neighbour->UpdateState(constrained_direction);
-        // Inform the neighbours of thze count of states that are no longer 
+        // Inform the neighbours of the count of states that are no longer 
         // viable because of the newly updated tile.
         // If newly updated is A
         // and we look to the right, originally could have been A(4) or B(4)
