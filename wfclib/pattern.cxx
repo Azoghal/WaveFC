@@ -42,7 +42,6 @@ std::vector<std::vector<int>> Pattern::GetPattern(){
 }
 
 int Pattern::GetPatternID() const{
-    std::cout << "Pattern ID: " << id_ << std::endl;
     return id_;
 }
 

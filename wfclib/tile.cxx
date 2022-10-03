@@ -14,8 +14,9 @@ Tile::Tile(std::map<wfc::Pattern,int> pattern_distro)//, Constraints* constraint
     sum_weights_ = 0;
     for (auto& [pattern, count] : pattern_distro){
         sum_weights_ += count;
-        patterns_[pattern.GetPatternID()] = pattern;
-        state_[pattern.GetPatternID()] = count;
+        int p_id = pattern.GetPatternID();
+        patterns_[p_id] = pattern;
+        state_[p_id] = count;
     }
 
     // Starts uncollapsed and with no final state
@@ -90,15 +91,11 @@ int Tile::GetRandomState(){
     // so we can avoid renormalizing after each updated.
     //float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float r = static_cast <float> (rand()) / (static_cast <float>(RAND_MAX) /sum_weights_);
-    std::cout << "Sum_weights: " << sum_weights_ << std::endl;
     for(auto& [id, weight]: state_) {
-        std::cout << "R: " << r << std::endl;
-        std::cout << id << " " << weight << std::endl;
         if(r < weight)
             return id;
         r -= weight;
     }
-    std::cout << "Random broken" << std::endl;
     return -1;
 }
 
