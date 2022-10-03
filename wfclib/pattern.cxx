@@ -4,21 +4,24 @@
 namespace wfc{
 
 Pattern::Pattern(){
-    // Non collapsed pattern
+    // Non pattern
+    id_ = -1;
     size_ = -1;
     pattern_ = std::vector<std::vector<int>>();
 }
 
-Pattern::Pattern(int size)
+Pattern::Pattern(int id, int size)
 {
     size_ = size;
     pattern_ = std::vector<std::vector<int>>(size_, std::vector<int>(size_, 0));
+    id_ = id;
 }
 
-Pattern::Pattern(std::vector<std::vector<int>> pattern)
+Pattern::Pattern(int id, std::vector<std::vector<int>> pattern)
 {
     pattern_ = pattern;
     size_ = pattern_.size();
+    id_ = id;
     // TODO Raise exception if not square
 }
 
@@ -38,7 +41,8 @@ std::vector<std::vector<int>> Pattern::GetPattern(){
     return pattern_;
 }
 
-int Pattern::GetPatternID(){
+int Pattern::GetPatternID() const{
+    std::cout << "Pattern ID: " << id_ << std::endl;
     return id_;
 }
 

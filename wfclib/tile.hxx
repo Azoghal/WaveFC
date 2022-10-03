@@ -20,8 +20,8 @@ private:
     float entropy_;
     float sum_weights_;
     int num_patterns_;
-    std::vector<wfc::Pattern> patterns_;
-    std::map<wfc::Pattern, float> state_;
+    std::map<int, wfc::Pattern> patterns_;
+    std::map<int, float> state_;
     std::vector<Tile*> neighbours_;
     int GetRandomState();
     inline void UpdateSumWeights();

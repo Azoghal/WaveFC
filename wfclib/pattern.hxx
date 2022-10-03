@@ -13,12 +13,12 @@ private:
     std::vector<std::vector<int>> pattern_;
 public:
     Pattern();
-    Pattern(int size);
-    Pattern(std::vector<std::vector<int>> pattern);
+    Pattern(int id, int size);
+    Pattern(int id, std::vector<std::vector<int>> pattern);
     std::vector<Pattern> GenerateRotations();
     std::vector<Pattern> GenerateReflections();
     std::vector<std::vector<int>> GetPattern();
-    int GetPatternID();
+    int GetPatternID() const;
     const bool operator<(Pattern const& rhs) const;
 };
 

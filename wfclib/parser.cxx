@@ -51,8 +51,8 @@ std::vector<std::vector<int>> Parser::ReadInput(std::string filename){
     return int_world;
 }
 
-int Parser::GeneratePatternID(wfc::Pattern pattern){
-    std::map<wfc::Pattern, int>::iterator it = pattern_ids_.find(pattern);
+int Parser::GeneratePatternID(std::vector<std::vector<int>> pattern){
+    std::map<std::vector<std::vector<int>>, int>::iterator it = pattern_ids_.find(pattern);
     if(it != pattern_ids_.end())
     {
         //element found;
@@ -93,8 +93,8 @@ void Parser::ParseLoop(){
                 }
             }
             // Increase count of pattern appearence, find its unique id, add to pattern world
-            pattern_distro[kernel]++;
             int pattern_id = this->GeneratePatternID(kernel);
+            pattern_distro[wfc::Pattern(pattern_id,kernel)]++;
             pattern_id_row.push_back(pattern_id);
         }
         pattern_id_world.push_back(pattern_id_row);

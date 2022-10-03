@@ -15,12 +15,17 @@ Constraints::Constraints(std::map<int, std::vector<std::map<int,int>>> constrain
     constraints_ = constraints;
 }
 
-std::vector<std::set<int>> Constraints::GetConstrainedSets(int pattern_id){
-    return std::vector<std::set<int>>();
+std::vector<std::map<int,int>> Constraints::GetConstrainedSets(int pattern_id){
+    //return constraints_[pattern_id];
+    return std::vector<std::map<int,int>>(4,std::map<int,int>());
 }
 
-std::vector<std::set<int>> Constraints::BuildConstrainedSets(std::set<int> pattern_ids){
-    return std::vector<std::set<int>>();
+std::vector<std::map<int,int>> Constraints::BuildConstrainedSets(std::vector<int> pattern_ids){
+    for (int pattern_id : pattern_ids){
+
+    }
+    //return constraints_[pattern_ids[0]];
+    return std::vector<std::map<int,int>>(4,std::map<int,int>());
 }
 
 } // namespace wfc

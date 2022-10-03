@@ -18,8 +18,8 @@ private:
 public:
     Constraints();
     Constraints(std::map<int, std::vector<std::map<int,int>>> constraints);
-    std::vector<std::set<int>> GetConstrainedSets(int pattern_id);
-    std::vector<std::set<int>> BuildConstrainedSets(std::set<int> pattern_ids);
+    std::vector<std::map<int,int>> GetConstrainedSets(int pattern_id);
+    std::vector<std::map<int,int>> BuildConstrainedSets(std::vector<int> pattern_ids);
 };
 
 } // namespace wfc

@@ -8,35 +8,26 @@ Tile::Tile(std::map<wfc::Pattern,int> pattern_distro)//, Constraints* constraint
 {
     // Find the number of used states, and total for normalising
     num_patterns_ = pattern_distro.size();
-    patterns_ = std::vector<wfc::Pattern>();
+    patterns_ = std::map<int, wfc::Pattern>();
 
-    float normaliser;
+    //float normaliser;
+    sum_weights_ = 0;
     for (auto& [pattern, count] : pattern_distro){
-        normaliser += count;
-        patterns_.push_back(pattern);
+        sum_weights_ += count;
+        patterns_[pattern.GetPatternID()] = pattern;
+        state_[pattern.GetPatternID()] = count;
     }
 
     // Starts uncollapsed and with no final state
     collapsed_ = false;
     final_state_ = std::nullopt;
 
-    sum_weights_ = 0;
-    for (auto& [pattern, count] : pattern_distro){
-        state_[pattern] = count/normaliser;
-        sum_weights_ += count/normaliser;
-    }
-
-    if (sum_weights_ != 1){
-        std::cout << "Sum Weights not 1" << std::endl;
-    }
-    //constraints_ = constraints;
     this->UpdateEntropy();
 }
 
-void Tile::UpdateState(std::map<int,int> impossible_states){
-    // Maybe should be a map of pattern id to the now dissallowed count...
-    // Update state with newly constrained states.
-    // TODO currently not correct, constraining strictly to one kernel when it actually lives in multiple.
+void Tile::UpdateState(std::map<int,int> constrained_states){
+    // Remove the given count from each part of the state.
+    // Change to boolean if anything changed - determines if children added to queue.
     if (!collapsed_){
         // do the updating
         //state_ = constrained_states;
@@ -44,23 +35,23 @@ void Tile::UpdateState(std::map<int,int> impossible_states){
         this->UpdateSumWeights();
     }
     else{
-        state_ = std::map<wfc::Pattern,float>();
+        state_ = std::map<int,float>();
     }
 }
 
 void Tile::UpdateSumWeights(){
     sum_weights_ = 0;
-    for (auto const& [pattern, prob] : state_){
-        sum_weights_ += prob;
+    for (auto const& [pattern, weight] : state_){
+        sum_weights_ += weight;
     }
-    // TODO add assertion for sum_weights should be 1"
 }
 
 void Tile::UpdateEntropy(){
     // - sum (p(x)log(px))
     if(!collapsed_){
         entropy_ = 0;
-        for (auto const& [pattern, prob] : state_){
+        for (auto const& [pattern, weight] : state_){
+            float prob = weight / sum_weights_;
             entropy_ -= (prob * std::log(prob));
         }
     }
@@ -99,11 +90,15 @@ int Tile::GetRandomState(){
     // so we can avoid renormalizing after each updated.
     //float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float r = static_cast <float> (rand()) / (static_cast <float>(RAND_MAX) /sum_weights_);
-    for(int i=0; i<num_patterns_; ++i) {
-        if(r < state_[i])
-            return i;
-        r -= state_[i];
+    std::cout << "Sum_weights: " << sum_weights_ << std::endl;
+    for(auto& [id, weight]: state_) {
+        std::cout << "R: " << r << std::endl;
+        std::cout << id << " " << weight << std::endl;
+        if(r < weight)
+            return id;
+        r -= weight;
     }
+    std::cout << "Random broken" << std::endl;
     return -1;
 }
 
