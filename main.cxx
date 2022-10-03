@@ -64,17 +64,18 @@ int main(int argc, char const *argv[])
         wait_for_input = argparsing::keyword_to_bool("--wait", argv[5]);
     }
 
-    // Load source image as 2d int vector
-    // std::vector<std::vector<int>> to_parse = {{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1}};
-
     // Parse source image and extract information
     wfc::Constraints constraints;
     std::map<int, wfc::Pattern> patterns;
     try {
         wfc::Parser WaveParse(filename, kernel_size);
+        std::cout << "BBB" << std::endl;
         WaveParse.Parse();
+        std::cout << "CCC" << std::endl;
         constraints = WaveParse.GetConstraints();
+        std::cout << "DDD" << std::endl;
         patterns = WaveParse.GetPatterns();
+        std::cout << "EEE" << std::endl;
     }
     catch (std::invalid_argument& e){
         std::cerr << e.what() << std::endl;

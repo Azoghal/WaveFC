@@ -8,7 +8,12 @@ Tile::Tile(std::map<int,int> unconstrained_state, std::map<int,wfc::Pattern> pat
 {
     // Find the number of used states, and total for normalising
     num_patterns_ = unconstrained_state.size();
+
     patterns_ = patterns;
+    std::cout << "Patterns that are tracked:" << std::endl;
+    for (auto& [p_id, pattern] : patterns){
+        std::cout << p_id << std::endl;
+    }
 
     sum_weights_ = 0;
     for (auto& [p_id, count] : unconstrained_state){
@@ -29,13 +34,24 @@ void Tile::UpdateState(std::map<int,int> constrained_states){
     if (!collapsed_){
         // do the updating
         //state_ = constrained_states;
-        for (auto& [key,val] : constrained_states){
-            if (state_[key] < val){
-                state_[key] = val;
+        std::cout << "  Old | New" << std::endl;
+        //for (auto& [p_id, current_weight] : state_){
+        for (int p_id=1; p_id< num_patterns_+1; ++p_id){
+            int current_weight = state_[p_id];
+            int new_weight = constrained_states[p_id];
+            std::cout << p_id << ":  " << current_weight << "   ";
+            if (new_weight < current_weight){
+                state_[p_id] = new_weight;
             }
+            std::cout << new_weight << std::endl;
         }
-        this->UpdateEntropy();
+        std::cout << "Total" << std::endl;
+        for (auto& [key,val] : state_){
+            std::cout << key << ":  " << val << "   " << std::endl << std::endl;
+        }
+        std::cout << "New Entropy" << entropy_ << std::endl;
         this->UpdateSumWeights();
+        this->UpdateEntropy();
     }
     else{
         state_ = std::map<int,float>();
@@ -55,7 +71,9 @@ void Tile::UpdateEntropy(){
         entropy_ = 0;
         for (auto const& [pattern, weight] : state_){
             float prob = weight / sum_weights_;
-            entropy_ -= (prob * std::log(prob));
+            if (prob > 0){
+                entropy_ -= (prob * std::log(prob));
+            }
         }
     }
 }

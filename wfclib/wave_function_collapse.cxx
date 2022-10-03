@@ -24,12 +24,7 @@ WaveFunctionCollapse::WaveFunctionCollapse(int p_width, int p_height, int tile_s
 
 void WaveFunctionCollapse::SetupTiles(){
     // TODO is pattern distribution neccessary? how about doing constraints_.
-    
     world_ = std::vector<std::vector<Tile>>(t_width_, std::vector<Tile>(t_height_, Tile(constraints_.GetUnconstrained(), patterns_)));
-    // set neighbours of tiles
-    // calculate all their entropies and store minimum
-    // options: loop neighbours around
-    // setup fake neighbours
     for(int y=0; y<t_height_; ++y){
         for(int x=0; x<t_width_; ++x){
             //std::vector<std::vector<Tile*>> neighbours(3,std::vector<Tile*>(3,nullptr));

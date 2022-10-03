@@ -6,6 +6,7 @@ project(WaveFC VERSION 1.0 LANGUAGES CXX)
 configure_file(prep_config.h.in prep_config.h)
 configure_file("${PROJECT_SOURCE_DIR}/inputs/file.txt" ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/inputs/file_2.txt" ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/inputs/file_3.txt" ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 #file(GLOB "${PROJECT_SOURCE_DIR}/inputs" "*.txt" CONFIGURE_DEPENDS "*.hxx" "*.cxx")
 

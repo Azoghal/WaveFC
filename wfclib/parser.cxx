@@ -71,25 +71,29 @@ void Parser::Parse(){
 void Parser::ParseLoop(){
     // Find all kernels (for now ignoring symmetry and rotations)
     //std::unordered_map<int, int> states_observed;
-    std::map<int, wfc::Pattern> patterns;
     std::map<int,std::vector<std::map<int,int>>> constraints;
     std::vector<std::vector<int>> pattern_id_world;
     int in_height = input_.size();
     int in_width = input_[0].size();
     // TODO assuming looping boundaries
     // TODO faster loops?
+    std::cout << "(1) size: " << in_width << "x" << in_height << "and kernel size" << std::endl;
     for (int y=0; y<in_height; y += kernel_size_){
+        std::cout << "(2) y=" << y << std::endl;
         std::vector<int> pattern_id_row;
         for (int x=0; x<in_width; x += kernel_size_){
-            //states_observed[input_[x][y]] += 1;
+            std::cout << "(3) x="<< x << std::endl;
             std::vector<std::vector<int>> kernel(kernel_size_, std::vector<int>(kernel_size_));
             // kernel from current top left 
             for (int i=0; i<kernel_size_; ++i){
+                std::cout << "(4) i="<<i << std::endl;
                 for (int j=0; j<kernel_size_; ++j){
+                    std::cout << "(5) j="<<j << std::endl;
                     // Boundary looping
                     int xx = (x + i + in_width) % in_width;
                     int yy = (y + j + in_height) % in_height;
-                    kernel[i][j] = input_[xx][yy];
+                    std::cout << "      "<< xx << "," <<  yy << std::endl;
+                    kernel[i][j] = input_[yy][xx];
                 }
             }
             // Increase count of pattern appearence, find its unique id, add to pattern world
@@ -100,8 +104,8 @@ void Parser::ParseLoop(){
         pattern_id_world.push_back(pattern_id_row);
     }
 
-    int pattern_world_width = pattern_id_world.size();
-    int pattern_world_height = pattern_id_world[0].size();
+    int pattern_world_height = pattern_id_world.size();
+    int pattern_world_width = pattern_id_world[0].size();
 
     for (int p_id=1; p_id < next_pattern_id_; ++p_id){
         constraints[p_id] = std::vector<std::map<int,int>> (4,std::map<int,int>());
@@ -151,7 +155,6 @@ void Parser::ParseLoop(){
     //     }
     // }
 
-    patterns_ = patterns;
     constraints_ = constraints;
 }
 
