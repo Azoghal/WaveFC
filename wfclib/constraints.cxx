@@ -33,7 +33,6 @@ std::vector<std::map<int,int>> Constraints::GetConstrainedSets(int pattern_id){
 
 std::vector<std::map<int,int>> Constraints::BuildConstrainedSets(std::vector<int> pattern_ids){
     // Composite by summing independent possibilities (as only one possible final result in each direction)
-    std::cout << pattern_ids.size() << " Size" << std::endl;
     std::vector<std::map<int,int>> total_constrained(4,std::map<int,int>());
     for (int pattern_id : pattern_ids){
         for (int i=0; i<4; ++i){

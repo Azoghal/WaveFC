@@ -12,8 +12,9 @@ Tile::Tile(std::map<int,int> unconstrained_state, std::map<int,wfc::Pattern> pat
     patterns_ = patterns;
     std::cout << "Patterns that are tracked:" << std::endl;
     for (auto& [p_id, pattern] : patterns){
-        std::cout << p_id << std::endl;
+        std::cout << p_id << " ";
     }
+    std::cout << std::endl;
 
     sum_weights_ = 0;
     for (auto& [p_id, count] : unconstrained_state){
@@ -33,23 +34,13 @@ void Tile::UpdateState(std::map<int,int> constrained_states){
     // Change to boolean if anything changed - determines if children added to queue.
     if (!collapsed_){
         // do the updating
-        //state_ = constrained_states;
-        std::cout << "  Old | New" << std::endl;
-        //for (auto& [p_id, current_weight] : state_){
         for (int p_id=1; p_id< num_patterns_+1; ++p_id){
             int current_weight = state_[p_id];
             int new_weight = constrained_states[p_id];
-            std::cout << p_id << ":  " << current_weight << "   ";
             if (new_weight < current_weight){
                 state_[p_id] = new_weight;
             }
-            std::cout << new_weight << std::endl;
         }
-        std::cout << "Total" << std::endl;
-        for (auto& [key,val] : state_){
-            std::cout << key << ":  " << val << "   " << std::endl << std::endl;
-        }
-        std::cout << "New Entropy" << entropy_ << std::endl;
         this->UpdateSumWeights();
         this->UpdateEntropy();
     }

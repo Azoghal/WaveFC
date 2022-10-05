@@ -6,7 +6,6 @@
 #include "constraints.hxx"
 #include "pattern.hxx"
 
-
 namespace wfc{
 
 class Parser
@@ -18,15 +17,20 @@ private:
     std::map<int, wfc::Pattern> patterns_;
     std::map<std::vector<std::vector<int>>, int> pattern_ids_;
     int next_pattern_id_;
-    void CheckKernelSize();
+    std::pair<int,std::string> ReadToken(std::string);
+    std::vector<std::string> TokeniseLine(std::string);
+    int InputCharToInt(std::string s);
     int InputCharToInt(char c);
-    void ParseLoop();
     int GeneratePatternID(std::vector<std::vector<int>> pattern);
+    void CheckKernelSize();
+    void ParseLoop();
 public:
-    Parser(std::string input_file, int kernel_size);
+    Parser();
     void SetKernelSize(int kernel_size);
     void UpdateInput(std::vector<std::vector<int>> new_input);
-    void Parse();
+    void Parse(std::string input_file, int kernel_size);
+    void SaveParse(std::string output_file);
+    void LoadParse(std::string input_file);
     std::vector<std::vector<int>> ReadInput(std::string filename);
     wfc::Constraints GetConstraints();
     std::map<int,wfc::Pattern> GetPatterns();

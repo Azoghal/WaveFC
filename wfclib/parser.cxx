@@ -8,17 +8,12 @@
 
 namespace wfc{
 
-Parser::Parser(std::string input_file, int kernel_size)
+Parser::Parser()
 {
-    kernel_size_ = kernel_size;
-    input_ = this->ReadInput(input_file);
     next_pattern_id_ = 1;
-    this->CheckKernelSize();
 }
 
-int Parser::InputCharToInt(char c){
-    std::string s;
-    s.push_back(c);
+int Parser::InputCharToInt(std::string s){
     // Parse string arg to int
     std::istringstream char_str(s);
     int val;
@@ -29,8 +24,14 @@ int Parser::InputCharToInt(char c){
     return -1;
 }
 
-std::vector<std::vector<int>> Parser::ReadInput(std::string filename){
+int Parser::InputCharToInt(char c){
+    std::string s;
+    s.push_back(c);
+    // Parse string arg to int
+    return this->InputCharToInt(s);
+}
 
+std::vector<std::vector<int>> Parser::ReadInput(std::string filename){
     std::string line;
     std::ifstream infile(filename);
     //std::vector<std::vector<char>> char_world;
@@ -52,20 +53,9 @@ std::vector<std::vector<int>> Parser::ReadInput(std::string filename){
     return int_world;
 }
 
-int Parser::GeneratePatternID(std::vector<std::vector<int>> pattern){
-    std::map<std::vector<std::vector<int>>, int>::iterator it = pattern_ids_.find(pattern);
-    if(it != pattern_ids_.end())
-    {
-        //element found;
-        return it->second;
-    }
-    else{
-        pattern_ids_[pattern] = next_pattern_id_;
-        return next_pattern_id_++;
-    }
-}
-
-void Parser::Parse(){
+void Parser::Parse(std::string input_file, int kernel_size){
+    kernel_size_ = kernel_size;
+    input_ = this->ReadInput(input_file);
     this->ParseLoop();
 }
 
@@ -73,6 +63,7 @@ void Parser::ParseLoop(){
     // Find all kernels (for now ignoring symmetry and rotations)
     //std::unordered_map<int, int> states_observed;
     std::map<int,std::vector<std::map<int,int>>> constraints;
+    std::map<int,wfc::Pattern> patterns;
     std::vector<std::vector<int>> pattern_id_world;
     int in_height = input_.size();
     int in_width = input_[0].size();
@@ -91,10 +82,9 @@ void Parser::ParseLoop(){
                     kernel[j][i] = input_[yy][xx];
                 }
             }
-            std::cout << "finisehd with xx yy usage" << std::endl;
             // Increase count of pattern appearence, find its unique id, add to pattern world
             int pattern_id = this->GeneratePatternID(kernel);
-            patterns_[pattern_id] = wfc::Pattern(pattern_id,kernel);
+            patterns[pattern_id] = wfc::Pattern(pattern_id,kernel);
             pattern_id_row.push_back(pattern_id);
         }
         pattern_id_world.push_back(pattern_id_row);
@@ -140,18 +130,131 @@ void Parser::ParseLoop(){
     //     }
     // }
     // check map
-    // std::vector<std::string> directions = {"Right", "Top", "Left", "Bottom"};
-    // for (auto& [p_id, vec] : constraints){
-    //     int direction = 0;
-    //     for (auto& m : vec){
-    //         for (auto& [n_id, n_count] : m){
-    //             std::cout << p_id << " has " << n_count << "x" << n_id << "to the " << directions[direction] << std::endl;
-    //         }
-    //         direction++;
-    //     }
-    // }
-
+    patterns_ = patterns;
     constraints_ = constraints;
+}
+
+std::pair<int,std::string> Parser::ReadToken(std::string s){
+    std::string output;
+    bool started = false;
+    int consumed = 0;
+    for (char c : s){
+        if (c != ' '){
+            output += c;
+            started = true;
+        }
+        else if (started){
+            break;
+        }
+        consumed++;
+    }
+    return std::pair<int,std::string>(consumed,output);
+}
+
+std::vector<std::string> Parser::TokeniseLine(std::string l){
+    std::string line = l;
+    std::vector<std::string> tokens;
+    std::pair<int,std::string> token = this->ReadToken(line);
+    while (token.first > 0){
+        tokens.push_back(token.second);
+        line = line.substr(token.first);
+        token = this->ReadToken(line);
+        
+    } 
+    return tokens;
+}
+
+
+void Parser::LoadParse(std::string input_file){
+    //Temp
+    // kernel [kernel size]
+    // patterns [n number of patterns]
+    // 
+    // [pattern id]
+    // [kernel size x colour id]
+    // [... kernel size]
+    // repeated n times
+    //std::pair<int,std::string> token;
+    wfc::Constraints constraints;
+    std::map<int, wfc::Pattern> patterns;
+
+    std::vector<std::string> tokens;
+    std::string line;
+    std::ifstream infile(input_file);
+    std::runtime_error format_error("Incorrectly formatted constraints file");
+
+    int num_patterns;
+
+    //Todo allow constraints file to have different order as each part has titles
+    std::getline(infile, line);
+    tokens = this->TokeniseLine(line);
+    if (tokens.size() != 2) throw format_error;
+    if (tokens[0] != "kernel") throw format_error;
+    int k = this->InputCharToInt(tokens[1]);
+    if (k < 1) throw format_error;
+    kernel_size_ = k;
+    std::cout << "parsed kernel size " << kernel_size_ << std::endl;
+
+    std::getline(infile, line);
+    tokens = this->TokeniseLine(line);
+    if (tokens.size() != 2 || tokens[0] != "patterns") throw format_error;
+    num_patterns = this->InputCharToInt(tokens[1]);
+    if (num_patterns < 1) throw format_error;
+    std::cout << "parsed num patterns " << kernel_size_ << std::endl;
+
+    for (int i = 0; i<num_patterns; ++i){
+        // Find a pattern id and its relevant pixel values
+        std::getline(infile, line);
+        tokens = this->TokeniseLine(line);
+        if (tokens.size() != 1) throw format_error;
+        int pattern_id = this->InputCharToInt(tokens[0]);
+        // TODO check that pattern id is not already  present.
+        std::vector<std::vector<int>> int_pattern;
+    
+        for (int p_line=0; p_line < kernel_size_; ++p_line){
+            std::vector<int> int_row;
+            std::getline(infile,line);
+            tokens = this->TokeniseLine(line);
+            if (tokens.size() != kernel_size_) throw format_error;
+            for (std::string token : tokens){
+                int pixel_id = this->InputCharToInt(token);
+                if (pixel_id < 0) throw format_error;
+                int_row.push_back(pixel_id);
+            }
+            int_pattern.push_back(int_row);
+        }
+        patterns[pattern_id] = wfc::Pattern(pattern_id, int_pattern);
+    }
+
+    for (auto& [id, pattern] : patterns){
+        std::cout << "Pattern " << id << std::endl;
+        std::vector<std::vector<int>> ints = pattern.GetPattern();
+        for (auto& row: ints){
+            for (auto& val: row){
+                std::cout << val;
+            }
+            std::cout << std::endl;
+        }
+    }
+    patterns_ = patterns;
+    constraints_ = constraints;
+}
+
+void Parser::SaveParse(std::string output_file){
+    // Convert constraints to text and write them
+}
+
+int Parser::GeneratePatternID(std::vector<std::vector<int>> pattern){
+    std::map<std::vector<std::vector<int>>, int>::iterator it = pattern_ids_.find(pattern);
+    if(it != pattern_ids_.end())
+    {
+        //element found;
+        return it->second;
+    }
+    else{
+        pattern_ids_[pattern] = next_pattern_id_;
+        return next_pattern_id_++;
+    }
 }
 
 void Parser::CheckKernelSize(){
