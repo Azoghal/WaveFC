@@ -31,8 +31,8 @@ void WorldRenderer::SetWorld(){
 
 void WorldRenderer::SetWorld(std::vector<std::vector<int>> map){
     // Set a non empty world.
-    int w = map.size();
-    int h = map[0].size();
+    int h = map.size();
+    int w = map[0].size();
     world_map_ = map;
 }
 

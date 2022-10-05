@@ -167,10 +167,6 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
         // If overall state started as A(16) B(16) C(16) D(16) for example
         // We end up with A(16) B(16) C(12)
     }
-    for(auto tile:neighbours){
-        //std::map<wfc::Pattern,float> constrained_states = constraints_.GetConstrainedStates(*tile);
-        //tile->UpdateState(constrained_states);
-    }
 }
 
 std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
@@ -184,7 +180,7 @@ std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
                     for (int x=0; x<tile_size_; ++x){
                         int yy = y + j*tile_size_;
                         int xx = x + i*tile_size_;
-                        int_world[xx][yy] = int_pattern[x][y];
+                        int_world[yy][xx] = int_pattern[y][x];
                     }
                 }
             }

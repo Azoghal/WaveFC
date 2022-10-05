@@ -48,6 +48,7 @@ std::vector<std::vector<int>> Parser::ReadInput(std::string filename){
         int_world.push_back(row);
     }
 
+    std::cout << "finished reading world" << std::endl;
     return int_world;
 }
 
@@ -77,25 +78,20 @@ void Parser::ParseLoop(){
     int in_width = input_[0].size();
     // TODO assuming looping boundaries
     // TODO faster loops?
-    std::cout << "(1) size: " << in_width << "x" << in_height << "and kernel size" << std::endl;
     for (int y=0; y<in_height; y += kernel_size_){
-        std::cout << "(2) y=" << y << std::endl;
         std::vector<int> pattern_id_row;
         for (int x=0; x<in_width; x += kernel_size_){
-            std::cout << "(3) x="<< x << std::endl;
             std::vector<std::vector<int>> kernel(kernel_size_, std::vector<int>(kernel_size_));
             // kernel from current top left 
-            for (int i=0; i<kernel_size_; ++i){
-                std::cout << "(4) i="<<i << std::endl;
-                for (int j=0; j<kernel_size_; ++j){
-                    std::cout << "(5) j="<<j << std::endl;
+            for (int j=0; j<kernel_size_; ++j){
+                for (int i=0; i<kernel_size_; ++i){
                     // Boundary looping
                     int xx = (x + i + in_width) % in_width;
                     int yy = (y + j + in_height) % in_height;
-                    std::cout << "      "<< xx << "," <<  yy << std::endl;
-                    kernel[i][j] = input_[yy][xx];
+                    kernel[j][i] = input_[yy][xx];
                 }
             }
+            std::cout << "finisehd with xx yy usage" << std::endl;
             // Increase count of pattern appearence, find its unique id, add to pattern world
             int pattern_id = this->GeneratePatternID(kernel);
             patterns_[pattern_id] = wfc::Pattern(pattern_id,kernel);
@@ -114,15 +110,15 @@ void Parser::ParseLoop(){
 
     for (int y=0; y<pattern_world_height; ++y){
          for (int x=0; x<pattern_world_width; ++x){
-            int centre_id = pattern_id_world[x][y];
+            int centre_id = pattern_id_world[y][x];
             int left = (x - 1 + pattern_world_width) % pattern_world_width;
             int right = (x + 1 + pattern_world_width) % pattern_world_width;
             int top = (y - 1 + pattern_world_height) % pattern_world_height;
             int bottom = (y + 1 + pattern_world_height) % pattern_world_height;
-            constraints[centre_id][0][pattern_id_world[right][y]] += 1;
-            constraints[centre_id][1][pattern_id_world[x][top]] += 1;
-            constraints[centre_id][2][pattern_id_world[left][y]] += 1;
-            constraints[centre_id][3][pattern_id_world[x][bottom]] += 1;
+            constraints[centre_id][0][pattern_id_world[y][right]] += 1;
+            constraints[centre_id][1][pattern_id_world[top][x]] += 1;
+            constraints[centre_id][2][pattern_id_world[y][left]] += 1;
+            constraints[centre_id][3][pattern_id_world[bottom][x]] += 1;
         }
     }
 
