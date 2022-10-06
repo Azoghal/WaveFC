@@ -175,6 +175,7 @@ void Parser::LoadParse(std::string input_file){
     // [... kernel size]
     // repeated n times
     //std::pair<int,std::string> token;
+    std::map<int, std::vector<std::map<int,int>>> c_map;
     wfc::Constraints constraints;
     std::map<int, wfc::Pattern> patterns;
 
@@ -184,6 +185,7 @@ void Parser::LoadParse(std::string input_file){
     std::runtime_error format_error("Incorrectly formatted constraints file");
 
     int num_patterns;
+    int num_constraints;
 
     //Todo allow constraints file to have different order as each part has titles
     std::getline(infile, line);
@@ -224,6 +226,8 @@ void Parser::LoadParse(std::string input_file){
             int_pattern.push_back(int_row);
         }
         patterns[pattern_id] = wfc::Pattern(pattern_id, int_pattern);
+        // make vector of empty maps for constraints to be written to.
+        c_map[pattern_id] = std::vector<std::map<int,int>>(4,std::map<int,int>());
     }
 
     for (auto& [id, pattern] : patterns){
@@ -236,6 +240,58 @@ void Parser::LoadParse(std::string input_file){
             std::cout << std::endl;
         }
     }
+
+    int left, right, top, bottom, count;
+
+    std::getline(infile, line);
+    tokens = this->TokeniseLine(line);
+    if (tokens.size() != 2) throw format_error;
+    if (tokens[0] != "horizontal") throw format_error;
+    num_constraints = this->InputCharToInt(tokens[1]);
+    if (k < 1) throw format_error;
+    kernel_size_ = k;
+    std::cout << "parsing " << num_constraints << " horizontal constraints" << std::endl;
+    
+    for (int i=0; i< num_constraints; ++i){
+        std::getline(infile, line);
+        tokens = this->TokeniseLine(line);
+        if (tokens.size() != 3) throw format_error;
+        left = this->InputCharToInt(tokens[0]);
+        right = this->InputCharToInt(tokens[1]);
+        count = this->InputCharToInt(tokens[2]);
+        if (left < 0 || right < 0 || count < 0) throw format_error;
+        // constraint indexing
+        // pattern id, direction index, neighbour id -> count
+        c_map[left][0][right] = count;
+        c_map[right][2][left] = count;
+        std::cout << left << " " << right << " x" << count << std::endl;
+    }
+
+    std::getline(infile, line);
+    tokens = this->TokeniseLine(line);
+    if (tokens.size() != 2) throw format_error;
+    if (tokens[0] != "vertical") throw format_error;
+    num_constraints = this->InputCharToInt(tokens[1]);
+    if (k < 1) throw format_error;
+    kernel_size_ = k;
+    std::cout << "parsing " << num_constraints << " vertical constraints" << std::endl;
+    
+    for (int i=0; i< num_constraints; ++i){
+        std::getline(infile, line);
+        tokens = this->TokeniseLine(line);
+        if (tokens.size() != 3) throw format_error;
+        top = this->InputCharToInt(tokens[0]);
+        bottom = this->InputCharToInt(tokens[1]);
+        count = this->InputCharToInt(tokens[2]);
+        if (top < 0 || bottom < 0 || count < 0) throw format_error;
+        // constraint indexing
+        // pattern id, direction index, neighbour id -> count
+        c_map[top][1][bottom] = count;
+        c_map[bottom][3][top] = count;
+        std::cout << top << " x" << count << std::endl;
+        std::cout << bottom << std::endl  << std::endl;;
+    }
+
     patterns_ = patterns;
     constraints_ = constraints;
 }
