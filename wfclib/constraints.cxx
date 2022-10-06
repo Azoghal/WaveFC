@@ -45,4 +45,17 @@ std::vector<std::map<int,int>> Constraints::BuildConstrainedSets(std::vector<int
     return total_constrained;
 }
 
+void Constraints::Print(){
+    // std::map<int, std::vector<std::map<int,int>>> constraints_;
+    std::vector<std::string> directions = {"right", "top", "left", "bottom"};
+    for (auto& [p_id, vec] : constraints_){
+        std::cout << p_id << " has:" << std::endl; 
+        for  (int i=0; i<4; ++i){
+            for (auto& [n_id, count] : vec[i]){
+                std::cout << count << "x " << n_id << " to the " << directions[i] << std::endl;
+            }
+        }
+    }
+}
+
 } // namespace wfc

@@ -66,13 +66,16 @@ int main(int argc, char const *argv[])
 
     // Parse source image and extract information
     wfc::Parser WaveParse;
-    WaveParse.LoadParse("constraints.txt");
     wfc::Constraints constraints;
     std::map<int, wfc::Pattern> patterns;
     try {
-        WaveParse.Parse(filename, kernel_size);
+        WaveParse.LoadParse("constraints.txt");
         constraints = WaveParse.GetConstraints();
         patterns = WaveParse.GetPatterns();
+        //WaveParse.Parse(filename, kernel_size);
+        //constraints = WaveParse.GetConstraints();
+        //patterns = WaveParse.GetPatterns();
+        //constraints.Print();
     }
     catch (std::invalid_argument& e){
         std::cerr << e.what() << std::endl;

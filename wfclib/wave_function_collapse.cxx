@@ -173,14 +173,34 @@ std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
     std::vector<std::vector<int>> int_world(p_width_, std::vector<int>(p_height_, -1));
     for(int j=0; j<t_height_; ++j){
         for(int i=0; i<t_width_; ++i){
-            if(world_[i][j].IsCollapsed()){
-                wfc::Pattern p = world_[i][j].final_state_.value();
-                std::vector<std::vector<int>> int_pattern = p.GetPattern();
+            std::vector<std::vector<int>> int_pattern;
+            if(world_[j][i].IsCollapsed()){
+                wfc::Pattern p = world_[j][i].final_state_.value();
+                int_pattern = p.GetPattern();
                 for (int y=0; y<tile_size_; ++y){
                     for (int x=0; x<tile_size_; ++x){
                         int yy = y + j*tile_size_;
                         int xx = x + i*tile_size_;
                         int_world[yy][xx] = int_pattern[y][x];
+                    }
+                }
+            }
+            else{
+                for (auto& [id, weight] : world_[j][i].GetState()){
+                    if (weight > 0){
+                        bool placed = false;
+                        for (int y=0; y<tile_size_; ++y){
+                            for (int x=0; x<tile_size_; ++x){
+                                int yy = y + j*tile_size_;
+                                int xx = x + i*tile_size_;
+                                if (int_world[yy][xx] == -1){
+                                    int_world[yy][xx] = id;
+                                    placed = true;
+                                    break;
+                                }
+                            }
+                            if (placed) break;
+                        }
                     }
                 }
             }

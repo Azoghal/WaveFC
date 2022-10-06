@@ -114,5 +114,9 @@ bool Tile::IsCollapsed(){
     return collapsed_;
 }
 
+std::map<int,float> Tile::GetState(){
+    return state_;
+}
+
 
 } // namespace wfc

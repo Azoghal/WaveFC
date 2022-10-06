@@ -22,6 +22,7 @@ public:
     std::map<int,int> GetUnconstrained();
     std::vector<std::map<int,int>> GetConstrainedSets(int pattern_id);
     std::vector<std::map<int,int>> BuildConstrainedSets(std::vector<int> pattern_ids);
+    void Print();
 };
 
 } // namespace wfc

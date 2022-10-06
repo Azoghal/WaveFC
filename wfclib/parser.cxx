@@ -131,7 +131,7 @@ void Parser::ParseLoop(){
     // }
     // check map
     patterns_ = patterns;
-    constraints_ = constraints;
+    constraints_ = wfc::Constraints(constraints);
 }
 
 std::pair<int,std::string> Parser::ReadToken(std::string s){
@@ -166,6 +166,7 @@ std::vector<std::string> Parser::TokeniseLine(std::string l){
 
 
 void Parser::LoadParse(std::string input_file){
+    input_ = std::vector<std::vector<int>>();
     //Temp
     // kernel [kernel size]
     // patterns [n number of patterns]
@@ -175,8 +176,7 @@ void Parser::LoadParse(std::string input_file){
     // [... kernel size]
     // repeated n times
     //std::pair<int,std::string> token;
-    std::map<int, std::vector<std::map<int,int>>> c_map;
-    wfc::Constraints constraints;
+    std::map<int, std::vector<std::map<int,int>>> constraints;
     std::map<int, wfc::Pattern> patterns;
 
     std::vector<std::string> tokens;
@@ -227,7 +227,7 @@ void Parser::LoadParse(std::string input_file){
         }
         patterns[pattern_id] = wfc::Pattern(pattern_id, int_pattern);
         // make vector of empty maps for constraints to be written to.
-        c_map[pattern_id] = std::vector<std::map<int,int>>(4,std::map<int,int>());
+        constraints[pattern_id] = std::vector<std::map<int,int>>(4,std::map<int,int>());
     }
 
     for (auto& [id, pattern] : patterns){
@@ -262,8 +262,8 @@ void Parser::LoadParse(std::string input_file){
         if (left < 0 || right < 0 || count < 0) throw format_error;
         // constraint indexing
         // pattern id, direction index, neighbour id -> count
-        c_map[left][0][right] = count;
-        c_map[right][2][left] = count;
+        constraints[left][0][right] = count;
+        constraints[right][2][left] = count;
         std::cout << left << " " << right << " x" << count << std::endl;
     }
 
@@ -286,14 +286,14 @@ void Parser::LoadParse(std::string input_file){
         if (top < 0 || bottom < 0 || count < 0) throw format_error;
         // constraint indexing
         // pattern id, direction index, neighbour id -> count
-        c_map[top][1][bottom] = count;
-        c_map[bottom][3][top] = count;
+        constraints[top][1][bottom] = count;
+        constraints[bottom][3][top] = count;
         std::cout << top << " x" << count << std::endl;
         std::cout << bottom << std::endl  << std::endl;;
     }
 
     patterns_ = patterns;
-    constraints_ = constraints;
+    constraints_ = wfc::Constraints(constraints);
 }
 
 void Parser::SaveParse(std::string output_file){
@@ -331,6 +331,7 @@ void Parser::SetKernelSize(int kernel_size){
 }
 
 wfc::Constraints Parser::GetConstraints(){
+    std::cout << "Getting constriants" << std::endl;
     return constraints_;
 }
 

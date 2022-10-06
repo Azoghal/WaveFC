@@ -34,6 +34,7 @@ public:
     void SetNeighbours(std::vector<Tile*> neighbours);
     std::vector<Tile*> GetNeighbours();
     float GetEntropy();
+    std::map<int,float> GetState();
     bool IsCollapsed();
 };
 
