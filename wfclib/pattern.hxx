@@ -9,15 +9,17 @@ class Pattern
 {
 private:
     int size_;
+    int id_;
     std::vector<std::vector<int>> pattern_;
 public:
-    Pattern(int size);
-    Pattern(std::vector<std::vector<int>> pattern);
+    Pattern();
+    Pattern(int id, int size);
+    Pattern(int id, std::vector<std::vector<int>> pattern);
     std::vector<Pattern> GenerateRotations();
     std::vector<Pattern> GenerateReflections();
-    bool CheckMatches(std::vector<std::vector<int>> to_compare_) const;
+    std::vector<std::vector<int>> GetPattern();
+    int GetPatternID() const;
     const bool operator<(Pattern const& rhs) const;
-    int GetCentre() const;
 };
 
 } // namespace wfc

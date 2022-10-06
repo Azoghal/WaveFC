@@ -4,38 +4,48 @@
 
 namespace wfc {
     
-WaveFunctionCollapse::WaveFunctionCollapse(int width, int height, Constraints constraints, std::unordered_map<int,int> state_distro)
+WaveFunctionCollapse::WaveFunctionCollapse(int p_width, int p_height, int tile_size, Constraints constraints, std::map<int,wfc::Pattern> patterns)
 {
     std::cout << "Constructing wave_function_collapse object" << std::endl;
-    width_ = width;
-    height_ = height;
+    p_width_ = p_width;
+    p_height_ = p_height;
+    t_width_ = p_width/tile_size;
+    t_height_ = p_height/tile_size;
+    std::cout << "WaveFunction collapse of " << t_width_ << "x" << t_height_ << " tiles, ";
+    std::cout << "of size " << tile_size << "x" << tile_size << " pixels, ";
+    std::cout << "giving a canvas size of " << p_width_ << "x" << p_height_ << std::endl;
+    tile_size_ = tile_size;
     constraints_ = constraints;
-    state_distro_ = state_distro;
-    num_states_ = state_distro.size();
+    patterns_ = patterns;
     this->SetupTiles();
     lowest_tile_ = nullptr;
     renderer_ = nullptr;
 }
 
 void WaveFunctionCollapse::SetupTiles(){
-    world_ = std::vector<std::vector<Tile>>(width_, std::vector<Tile>(height_, Tile(state_distro_)));
-    // set neighbours of tiles
-    // calculate all their entropies and store minimum
-    // options: loop neighbours around
-    // setup fake neighbours
-    for(int y=0; y<height_; ++y){
-        for(int x=0; x<width_; ++x){
-            std::vector<std::vector<Tile*>> neighbours(3,std::vector<Tile*>(3,nullptr));
-            for (int j=-1; j<2; ++j){
-                for (int i=-1; i<2; ++i){
-                    int xx = (x + i + width_) % width_;
-                    int yy = (y + j + height_) % height_;
-                    neighbours[i+1][j+1] = &world_[xx][yy];
-                }
-            }
+    // TODO is pattern distribution neccessary? how about doing constraints_.
+    world_ = std::vector<std::vector<Tile>>(t_width_, std::vector<Tile>(t_height_, Tile(constraints_.GetUnconstrained(), patterns_)));
+    for(int y=0; y<t_height_; ++y){
+        for(int x=0; x<t_width_; ++x){
+            //std::vector<std::vector<Tile*>> neighbours(3,std::vector<Tile*>(3,nullptr));
+            std::vector<Tile*> neighbours;
+            int left = (x - 1 + t_width_) % t_width_;
+            int right = (x + 1 + t_width_) % t_width_;
+            int top = (y - 1 + t_height_) % t_height_;
+            int bottom = (y + 1 + t_height_) % t_height_;
+            // for (int j=-1; j<2; ++j){
+            //     for (int i=-1; i<2; ++i){
+            //         int xx = (x + i + t_width_) % t_width_;
+            //         int yy = (y + j + t_height_) % t_height_;
+            //         neighbours[i+1][j+1] = &world_[xx][yy];
+            //     }
+            // }
+            neighbours.push_back(&world_[right][y]);
+            neighbours.push_back(&world_[x][top]);
+            neighbours.push_back(&world_[left][y]);
+            neighbours.push_back(&world_[x][bottom]);
             world_[x][y].SetNeighbours(neighbours);
             world_[x][y].UpdateEntropy();
-            
         }
     }
 }
@@ -130,24 +140,69 @@ int WaveFunctionCollapse::FindLowestEntropy(){
 void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     // Find neighbours that need updated superposition
     std::cout << "Propogating changes" << std::endl;
-    std::vector<std::vector<wfc::Tile*>> neighbours = updated_tile->GetNeighbours();
-    for(auto row:neighbours){
-        for(auto tile:row){
-            std::unordered_map<int,float> constrained_states = constraints_.GetConstrainedStates(*tile);
-            tile->UpdateState(constrained_states);
-        }
+    std::vector<wfc::Tile*> neighbours = updated_tile->GetNeighbours();
+    // Add neighbours of changed tile to queue.
+    // Loop while queue not empty:
+    //     Pop tile
+    //     Get neighbours
+    //     Calculate if set must be reduced
+    //          reduce set
+    //          add neighbours to queue
+    // Do queue based bfs propagations
+    std::vector<int> pattern_ids;
+    pattern_ids.push_back(updated_tile->final_state_.value().GetPatternID());
+    std::vector<std::map<int,int>> constrained_states = constraints_.BuildConstrainedSets(pattern_ids);
+    for (int i=0; i < 4; ++i){
+        wfc::Tile* neighbour = neighbours[i];
+        std::map<int,int> constrained_direction = constrained_states[i];
+        neighbour->UpdateState(constrained_direction);
+        // Inform the neighbours of the count of states that are no longer 
+        // viable because of the newly updated tile.
+        // If newly updated is A
+        // and we look to the right, originally could have been A(4) or B(4)
+        // then we inform it to subtract B(4) from the state
+        // If newly updated is A or B
+        // And originally right of could have been A(4) B(4) C(4)
+        // Then we inform it to subtract C(4) and D
+        // If overall state started as A(16) B(16) C(16) D(16) for example
+        // We end up with A(16) B(16) C(12)
     }
 }
 
 std::vector<std::vector<int>> WaveFunctionCollapse::PrepareRenderWorld(){
-    std::vector<std::vector<int>> int_world(width_, std::vector<int>(height_, 0));
-    for(int y=0; y<height_; ++y){
-        for(int x=0; x<width_; ++x){
-            if(world_[x][y].IsCollapsed()){
-                int_world[x][y] = world_[x][y].final_state_.value();
+    std::vector<std::vector<int>> int_world(p_width_, std::vector<int>(p_height_, -1));
+    for(int j=0; j<t_height_; ++j){
+        for(int i=0; i<t_width_; ++i){
+            std::vector<std::vector<int>> int_pattern;
+            if(world_[j][i].IsCollapsed()){
+                wfc::Pattern p = world_[j][i].final_state_.value();
+                int_pattern = p.GetPattern();
+                for (int y=0; y<tile_size_; ++y){
+                    for (int x=0; x<tile_size_; ++x){
+                        int yy = y + j*tile_size_;
+                        int xx = x + i*tile_size_;
+                        int_world[yy][xx] = int_pattern[y][x];
+                    }
+                }
             }
             else{
-                int_world[x][y] = -1;
+                for (auto& [id, weight] : world_[j][i].GetState()){
+                    if (weight > 0){
+                        bool placed = false;
+                        for (int y=0; y<tile_size_; ++y){
+                            for (int x=0; x<tile_size_; ++x){
+                                int yy = y + j*tile_size_;
+                                int xx = x + i*tile_size_;
+                                if (int_world[yy][xx] == -1){
+                                    int_world[yy][xx] = id;
+                                    placed = true;
+                                    break;
+                                }
+                            }
+                            if (placed) break;
+                        }
+                    }
+                }
             }
         }
     }

@@ -37,8 +37,8 @@ namespace argparsing{
 
 int main(int argc, char const *argv[])
 {
-    std::string usage_string = "Usage: " + std::string(argv[0]) + " [wave width] [wave height] [kernel-size] [[--wait]]";
-    if (argc != 4 && argc != 5){
+    std::string usage_string = "Usage: " + std::string(argv[0]) + " [parse source] [wave width] [wave height] [kernel-size] [[--wait]]";
+    if (argc != 5 && argc != 6){
         std::cerr << usage_string << std::endl;
         return 1;
     }
@@ -47,9 +47,10 @@ int main(int argc, char const *argv[])
     srand(time(NULL));
 
     // Parse CLI arguments
-    int w = argparsing::arg_to_int(argv[1]);
-    int h = argparsing::arg_to_int(argv[2]);
-    int kernel_size = argparsing::arg_to_int(argv[3]);
+    std::string filename = argv[1];
+    int w = argparsing::arg_to_int(argv[2]);
+    int h = argparsing::arg_to_int(argv[3]);
+    int kernel_size = argparsing::arg_to_int(argv[4]);
 
     if ((w % kernel_size) || (h % kernel_size)){
         std::cerr << "Wave must be a multiple of kernel-size in all dimensions" << std::endl;
@@ -58,22 +59,23 @@ int main(int argc, char const *argv[])
     }
 
     bool wait_for_input = false;
-    if (argc == 5){
+    if (argc == 6){
         // If add more keyword arguments, loop over each passed pair and query for matching each expected
-        wait_for_input = argparsing::keyword_to_bool("--wait", argv[4]);
+        wait_for_input = argparsing::keyword_to_bool("--wait", argv[5]);
     }
 
-    // Load source image as 2d int vector
-    // std::vector<std::vector<int>> to_parse = {{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1},{1,0,1,0,1,0},{0,1,0,1,0,1}};
-
     // Parse source image and extract information
+    wfc::Parser WaveParse;
     wfc::Constraints constraints;
-    std::unordered_map<int,int> state_distro;
+    std::map<int, wfc::Pattern> patterns;
     try {
-        wfc::Parser WaveParse("file.txt", kernel_size);
-        WaveParse.Parse();
+        WaveParse.LoadParse("constraints.txt");
         constraints = WaveParse.GetConstraints();
-        state_distro = WaveParse.GetStateDistribution();
+        patterns = WaveParse.GetPatterns();
+        //WaveParse.Parse(filename, kernel_size);
+        //constraints = WaveParse.GetConstraints();
+        //patterns = WaveParse.GetPatterns();
+        //constraints.Print();
     }
     catch (std::invalid_argument& e){
         std::cerr << e.what() << std::endl;
@@ -87,7 +89,7 @@ int main(int argc, char const *argv[])
     renderer::WorldRenderer WaveRend(w, h);
 
     // Setup WFC and begin collapse
-    wfc::WaveFunctionCollapse WaveFC(w, h, constraints, state_distro);
+    wfc::WaveFunctionCollapse WaveFC(w, h, kernel_size, constraints, patterns);
     WaveFC.AddRenderer(&WaveRend);
     WaveFC.Collapse(wait_for_input);
     return 0;

@@ -5,50 +5,57 @@
 
 namespace wfc {
 
-Constraints::Constraints(std::map<wfc::Pattern, int> patterns)
-{
-    patterns_ = patterns;
+Constraints::Constraints(){
+    
 }
 
-Constraints::Constraints()
-{
-    // Default constructor for parser and wfc initialisation
-    Constraints(std::map<wfc::Pattern, int>());
-}
-
-std::unordered_map<int, float> Constraints::GetConstrainedStates(wfc::Tile tile){
-    std::unordered_map<int, float> constrained_states;
-    // Find states of any collapsed neighbours
-    std::vector<std::vector<int>> neighbour_states;
-    for (auto row : tile.GetNeighbours()){
-        std::vector<int> int_row;
-        for (auto tile_p : row){
-            if (tile_p->IsCollapsed()){
-                int_row.push_back(tile_p->final_state_.value());
-            }
-            else{
-                int_row.push_back(-1);
-            }
-        }
-        neighbour_states.push_back(int_row);
+Constraints::Constraints(std::map<int, std::vector<std::map<int,int>>> constraints){
+    // Pattern ID to 4 directions worth of sets
+    // Right Bottom Left Top
+    constraints_ = constraints;
+    std::vector<int> pattern_ids;
+    for (auto& [id,count] : constraints_){
+        pattern_ids.push_back(id);
     }
+    unconstrained_ = this->BuildConstrainedSets(pattern_ids)[0];
+}
 
-    // Find all observed patterns that match
-    float total_count = 0;
-    for (auto const& [pattern, count] : patterns_){
-        if (pattern.CheckMatches(neighbour_states)){
-            int centre_state= pattern.GetCentre();
-            constrained_states[centre_state] += count;
-            total_count += count;
+std::map<int,int> Constraints::GetUnconstrained(){
+    return unconstrained_;
+}
+
+std::vector<std::map<int,int>> Constraints::GetConstrainedSets(int pattern_id){
+    // [0] contains a map of pattern ids and weight/count that are valid for a tile to the right to have
+    // Tile Update state will then make any REDUCTIONS to counts in its state vector
+    return constraints_[pattern_id];
+    //return std::vector<std::map<int,int>>(4,std::map<int,int>());
+}
+
+std::vector<std::map<int,int>> Constraints::BuildConstrainedSets(std::vector<int> pattern_ids){
+    // Composite by summing independent possibilities (as only one possible final result in each direction)
+    std::vector<std::map<int,int>> total_constrained(4,std::map<int,int>());
+    for (int pattern_id : pattern_ids){
+        for (int i=0; i<4; ++i){
+            for (auto& [inner_id ,count] : constraints_[pattern_id][i]){
+                total_constrained[i][inner_id] += count;
+            }
         }
     }
     
-    // Normalise
-    for (auto const& [pattern, weight] : constrained_states){
-        constrained_states[pattern] = weight / total_count;
-    }
-    return constrained_states;
+    return total_constrained;
 }
 
+void Constraints::Print(){
+    // std::map<int, std::vector<std::map<int,int>>> constraints_;
+    std::vector<std::string> directions = {"right", "top", "left", "bottom"};
+    for (auto& [p_id, vec] : constraints_){
+        std::cout << p_id << " has:" << std::endl; 
+        for  (int i=0; i<4; ++i){
+            for (auto& [n_id, count] : vec[i]){
+                std::cout << count << "x " << n_id << " to the " << directions[i] << std::endl;
+            }
+        }
+    }
+}
 
 } // namespace wfc

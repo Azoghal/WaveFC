@@ -1,62 +1,70 @@
 #include "tile.hxx"
 #include <math.h>
 
+
 namespace wfc {
 
-Tile::Tile(std::unordered_map<int,int> state_distro_)//, Constraints* constraints)
+Tile::Tile(std::map<int,int> unconstrained_state, std::map<int,wfc::Pattern> patterns)//, Constraints* constraints)
 {
     // Find the number of used states, and total for normalising
-    num_states_ = state_distro_.size();
-    float normaliser;
-    for (auto& [id, count] : state_distro_){
-        normaliser += count;
+    num_patterns_ = unconstrained_state.size();
+
+    patterns_ = patterns;
+    std::cout << "Patterns that are tracked:" << std::endl;
+    for (auto& [p_id, pattern] : patterns){
+        std::cout << p_id << " ";
+    }
+    std::cout << std::endl;
+
+    sum_weights_ = 0;
+    for (auto& [p_id, count] : unconstrained_state){
+        sum_weights_ += count;
+        state_[p_id] = count;
     }
 
     // Starts uncollapsed and with no final state
     collapsed_ = false;
     final_state_ = std::nullopt;
 
-    sum_weights_ = 0;
-    for (auto& [id, count] : state_distro_){
-        state_[id] = count/normaliser;
-        sum_weights_ += count/normaliser;
-    }
-
-    if (sum_weights_ != 1){
-        std::cout << "Sum Weights not 1" << std::endl;
-    }
-    //constraints_ = constraints;
     this->UpdateEntropy();
 }
 
-void Tile::UpdateState(std::unordered_map<int,float> constrained_states){
-    // Update state with newly constrained states.
-    // TODO currently not correct, constraining strictly to one kernel when it actually lives in multiple.
+void Tile::UpdateState(std::map<int,int> constrained_states){
+    // Remove the given count from each part of the state.
+    // Change to boolean if anything changed - determines if children added to queue.
     if (!collapsed_){
         // do the updating
-        state_ = constrained_states;
-        this->UpdateEntropy();
+        for (int p_id=1; p_id< num_patterns_+1; ++p_id){
+            int current_weight = state_[p_id];
+            int new_weight = constrained_states[p_id];
+            if (new_weight < current_weight){
+                state_[p_id] = new_weight;
+            }
+        }
         this->UpdateSumWeights();
+        this->UpdateEntropy();
     }
     else{
-        state_ = std::unordered_map<int,float>();
+        state_ = std::map<int,float>();
     }
 }
 
 void Tile::UpdateSumWeights(){
     sum_weights_ = 0;
-    for (auto const& [id, prob] : state_){
-        sum_weights_ += prob;
+    for (auto const& [pattern, weight] : state_){
+        sum_weights_ += weight;
     }
-    // TODO add assertion for sum_weights should be 1"
 }
 
 void Tile::UpdateEntropy(){
     // - sum (p(x)log(px))
     if(!collapsed_){
         entropy_ = 0;
-        for (auto const& [id, prob] : state_){
-            entropy_ -= (prob * std::log(prob));
+        for (auto const& [pattern, weight] : state_){
+            float prob = weight / sum_weights_;
+            if (prob > 0){
+                entropy_ -= (prob * std::log(prob));
+            }
         }
     }
 }
@@ -65,11 +73,11 @@ float Tile::GetEntropy(){
     return entropy_;
 }
 
-void Tile::SetNeighbours(std::vector<std::vector<Tile*>> neighbours){
+void Tile::SetNeighbours(std::vector<Tile*> neighbours){
     neighbours_ = neighbours;
 }
 
-std::vector<std::vector<Tile*>> Tile::GetNeighbours(){
+std::vector<Tile*> Tile::GetNeighbours(){
     return neighbours_;
 }
 
@@ -80,7 +88,8 @@ int Tile::CollapseState(){
         return -1;
     }
     int r_state =  this->GetRandomState();
-    final_state_ = r_state;
+    std::cout << "random index: " << r_state << std::endl;
+    final_state_ = patterns_[r_state];
     collapsed_ = true;
     entropy_ = 0;
     std::cout << "Collapsing to state " << r_state << std::endl;
@@ -93,16 +102,20 @@ int Tile::GetRandomState(){
     // so we can avoid renormalizing after each updated.
     //float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float r = static_cast <float> (rand()) / (static_cast <float>(RAND_MAX) /sum_weights_);
-    for(int i=0; i<num_states_; ++i) {
-        if(r < state_[i])
-            return i;
-        r -= state_[i];
+    for(auto& [id, weight]: state_) {
+        if(r < weight)
+            return id;
+        r -= weight;
     }
     return -1;
 }
 
 bool Tile::IsCollapsed(){
     return collapsed_;
+}
+
+std::map<int,float> Tile::GetState(){
+    return state_;
 }
 
 

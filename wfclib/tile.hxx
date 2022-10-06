@@ -6,6 +6,9 @@
 #include <map>
 #include <vector>
 #include <optional>
+#include <set>
+
+#include "pattern.hxx"
 
 namespace wfc
 {
@@ -13,24 +16,25 @@ namespace wfc
 class Tile
 {
 private:
-    int num_states_;
     bool collapsed_;
     float entropy_;
     float sum_weights_;
-    std::unordered_map<int,int> state_distro_;
-    std::unordered_map<int, float> state_;
-    std::vector<std::vector<Tile*>> neighbours_;
+    int num_patterns_;
+    std::map<int, wfc::Pattern> patterns_;
+    std::map<int, float> state_;
+    std::vector<Tile*> neighbours_;
     int GetRandomState();
     inline void UpdateSumWeights();
 public:
-    Tile(std::unordered_map<int,int> start_distro);
-    std::optional<int> final_state_;
+    Tile(std::map<int,int> unconstrained, std::map<int,wfc::Pattern> patterns);
+    std::optional<wfc::Pattern> final_state_;
     int CollapseState();
     void UpdateEntropy();
-    void UpdateState(std::unordered_map<int,float> constrained_states);
-    void SetNeighbours(std::vector<std::vector<Tile*>> neighbours);
-    std::vector<std::vector<Tile*>> GetNeighbours();
+    void UpdateState(std::map<int,int> impossible_states);
+    void SetNeighbours(std::vector<Tile*> neighbours);
+    std::vector<Tile*> GetNeighbours();
     float GetEntropy();
+    std::map<int,float> GetState();
     bool IsCollapsed();
 };
 
