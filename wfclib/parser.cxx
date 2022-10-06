@@ -288,8 +288,9 @@ void Parser::LoadParse(std::string input_file){
         // pattern id, direction index, neighbour id -> count
         constraints[top][1][bottom] = count;
         constraints[bottom][3][top] = count;
-        std::cout << top << " x" << count << std::endl;
-        std::cout << bottom << std::endl  << std::endl;;
+        std::cout << top << " " << bottom << " x" << count << std::endl;
+        std::cout << bottom << " " << top << std::endl;
+
     }
 
     patterns_ = patterns;
@@ -331,7 +332,6 @@ void Parser::SetKernelSize(int kernel_size){
 }
 
 wfc::Constraints Parser::GetConstraints(){
-    std::cout << "Getting constriants" << std::endl;
     return constraints_;
 }
 

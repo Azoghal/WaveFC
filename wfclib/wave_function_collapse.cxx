@@ -40,12 +40,12 @@ void WaveFunctionCollapse::SetupTiles(){
             //         neighbours[i+1][j+1] = &world_[xx][yy];
             //     }
             // }
-            neighbours.push_back(&world_[right][y]);
-            neighbours.push_back(&world_[x][top]);
-            neighbours.push_back(&world_[left][y]);
-            neighbours.push_back(&world_[x][bottom]);
-            world_[x][y].SetNeighbours(neighbours);
-            world_[x][y].UpdateEntropy();
+            neighbours.push_back(&world_[y][right]);
+            neighbours.push_back(&world_[top][x]);
+            neighbours.push_back(&world_[y][left]);
+            neighbours.push_back(&world_[bottom][x]);
+            world_[y][x].SetNeighbours(neighbours);
+            world_[y][x].UpdateEntropy();
         }
     }
 }
@@ -152,6 +152,19 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     std::vector<int> pattern_ids;
     pattern_ids.push_back(updated_tile->final_state_.value().GetPatternID());
     std::vector<std::map<int,int>> constrained_states = constraints_.BuildConstrainedSets(pattern_ids);
+    std::vector<std::string> directions = {"right", "top", "left", "bottom"};
+    std::vector<std::string> symbols = {"-", "H", "V", "+", "~"};
+    for (auto& [p_id, pattern] : patterns_){
+        std::cout << "|     " << p_id << "     |" << std::endl;
+        pattern_ids = {p_id};
+        constrained_states = constraints_.BuildConstrainedSets(pattern_ids);
+        for (int i=0; i < 4; ++i){
+            std::cout << directions[i] << std::endl;
+            for (auto& [id, count] : constrained_states[i]){
+                std::cout << symbols[id] << " : " << count << std::endl;
+            }   
+        }
+    }
     for (int i=0; i < 4; ++i){
         wfc::Tile* neighbour = neighbours[i];
         std::map<int,int> constrained_direction = constrained_states[i];
