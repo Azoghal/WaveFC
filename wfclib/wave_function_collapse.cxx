@@ -152,19 +152,6 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     std::vector<int> pattern_ids;
     pattern_ids.push_back(updated_tile->final_state_.value().GetPatternID());
     std::vector<std::map<int,int>> constrained_states = constraints_.BuildConstrainedSets(pattern_ids);
-    std::vector<std::string> directions = {"right", "top", "left", "bottom"};
-    std::vector<std::string> symbols = {"-", "H", "V", "+", "~"};
-    for (auto& [p_id, pattern] : patterns_){
-        std::cout << "|     " << p_id << "     |" << std::endl;
-        pattern_ids = {p_id};
-        constrained_states = constraints_.BuildConstrainedSets(pattern_ids);
-        for (int i=0; i < 4; ++i){
-            std::cout << directions[i] << std::endl;
-            for (auto& [id, count] : constrained_states[i]){
-                std::cout << symbols[id] << " : " << count << std::endl;
-            }   
-        }
-    }
     for (int i=0; i < 4; ++i){
         wfc::Tile* neighbour = neighbours[i];
         std::map<int,int> constrained_direction = constrained_states[i];

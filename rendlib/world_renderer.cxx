@@ -3,7 +3,8 @@
 
 namespace renderer{
 
-std::unordered_map<int, char> WorldRenderer::sizemap_ =  {{-1,'_'}, {0, '-'}, {1, 'H'}, {2, 'V'}, {3, '+'}, {4, '~'}};
+std::unordered_map<int, char> WorldRenderer::sizemap_ =  {{-1,'_'}, {0, '-'}, {1, '1'}, {2, '2'}, {3, '3'}, {4, '4'}, {5,'5'}, {6,'6'}, {7,'7'}, {8,'8'}};
+// std::unordered_map<int, char> WorldRenderer::sizemap_ =  {{-1,'_'}, {0, '-'}, {1, '~'}, {2, 'o'}, {3, '0'}, {4, '#'}, {5,'@'}, {6,'6'}, {7,'7'}, {8,'8'}};
 
 WorldRenderer::WorldRenderer(int width, int height)
 {
@@ -43,6 +44,12 @@ void WorldRenderer::SetColourmap(){
     colourmap_[2] = "\033[31m";
     colourmap_[3] = "\033[35m";
     colourmap_[4] = "\033[34m";
+    colourmap_[5] = "\033[33m";
+    colourmap_[6] = "\033[90m";
+    colourmap_[7] = "\033[91m";
+    colourmap_[8] = "\033[92m";
+    colourmap_[9] = "\033[93m";
+
 }
 
 } // namespace renderer

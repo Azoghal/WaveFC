@@ -69,13 +69,12 @@ int main(int argc, char const *argv[])
     wfc::Constraints constraints;
     std::map<int, wfc::Pattern> patterns;
     try {
-        WaveParse.LoadParse("constraints.txt");
+        WaveParse.LoadParse("constraints_2.txt");
         constraints = WaveParse.GetConstraints();
         patterns = WaveParse.GetPatterns();
-        //WaveParse.Parse(filename, kernel_size);
-        //constraints = WaveParse.GetConstraints();
-        //patterns = WaveParse.GetPatterns();
-        //constraints.Print();
+        // WaveParse.Parse(filename, kernel_size);
+        // constraints = WaveParse.GetConstraints();
+        // patterns = WaveParse.GetPatterns();
     }
     catch (std::invalid_argument& e){
         std::cerr << e.what() << std::endl;

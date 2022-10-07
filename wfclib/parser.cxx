@@ -182,7 +182,7 @@ void Parser::LoadParse(std::string input_file){
     std::vector<std::string> tokens;
     std::string line;
     std::ifstream infile(input_file);
-    std::runtime_error format_error("Incorrectly formatted constraints file");
+    std::invalid_argument format_error("Incorrectly formatted constraints file");
 
     int num_patterns;
     int num_constraints;
@@ -286,8 +286,9 @@ void Parser::LoadParse(std::string input_file){
         if (top < 0 || bottom < 0 || count < 0) throw format_error;
         // constraint indexing
         // pattern id, direction index, neighbour id -> count
-        constraints[top][1][bottom] = count;
-        constraints[bottom][3][top] = count;
+        // Seems back to front because "above" another pattern is actually below in coordinates
+        constraints[bottom][1][top] = count;
+        constraints[top][3][bottom] = count;
         std::cout << top << " " << bottom << " x" << count << std::endl;
         std::cout << bottom << " " << top << std::endl;
 
