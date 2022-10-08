@@ -43,6 +43,10 @@ namespace argparsing{
 
 int main(int argc, char const *argv[])
 {
+    if (argc == 1){
+        argparsing::PrintUsage(argv[0]);
+        return 1;
+    }
     // Set random seed for state collapse
     srand(time(NULL));
 

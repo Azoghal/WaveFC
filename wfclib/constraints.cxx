@@ -45,6 +45,10 @@ std::vector<std::map<int,int>> Constraints::BuildConstrainedSets(std::vector<int
     return total_constrained;
 }
 
+std::map<int,std::vector<std::map<int,int>>> Constraints::GetConstraints(){
+    return constraints_;
+}
+
 void Constraints::Print(){
     // std::map<int, std::vector<std::map<int,int>>> constraints_;
     std::vector<std::string> directions = {"right", "top", "left", "bottom"};

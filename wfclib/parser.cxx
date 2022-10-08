@@ -163,26 +163,21 @@ std::vector<std::string> Parser::TokeniseLine(std::string l){
     std::vector<std::string> tokens;
     std::pair<int,std::string> token = this->ReadToken(line);
     while (token.first > 0){
-        tokens.push_back(token.second);
+        if (token.second != ""){
+            tokens.push_back(token.second);
+        }
         line = line.substr(token.first);
         token = this->ReadToken(line);
         
     } 
+    std::cout << line << " -- " << tokens.size() << std::endl;
     return tokens;
 }
 
 
 void Parser::LoadParse(std::string input_file){
     input_ = std::vector<std::vector<int>>();
-    //Temp
-    // kernel [kernel size]
-    // patterns [n number of patterns]
-    // 
-    // [pattern id]
-    // [kernel size x colour id]
-    // [... kernel size]
-    // repeated n times
-    //std::pair<int,std::string> token;
+    
     std::map<int, std::vector<std::map<int,int>>> constraints;
     std::map<int, wfc::Pattern> patterns;
 
@@ -307,16 +302,68 @@ void Parser::LoadParse(std::string input_file){
 
 void Parser::SaveParse(std::string output_file){
     // Convert constraints to text and write them
-    //Temp
-    // kernel [kernel size]
-    // patterns [n number of patterns]
-    // 
-    // [pattern id]
-    // [kernel size x colour id]
-    // [... kernel size]
-    // repeated n times
-    //std::pair<int,std::string> token;
-    std::cout << "Saving constraints (not yet implemented)" << std::endl;
+
+    // std::map<int, std::vector<std::map<int,int>>> constraints_;
+    int num_patterns = patterns_.size();
+
+    int num_horizontal = 0, num_vertical = 0;
+    std::map<int,std::map<int,int>> horizontals, verticals;
+
+    for (auto& [pattern, id] : pattern_ids_){
+        horizontals[id] = std::map<int,int>();
+        verticals[id] = std::map<int,int>();
+    }
+
+    std::map<int, std::vector<std::map<int,int>>> all_constraints = constraints_.GetConstraints();
+    for (auto& [p_id, directions] : all_constraints){
+        for (auto& [n_id, count] : directions[0]){
+            horizontals[p_id][n_id] = count;
+            num_horizontal++;
+        }
+        for (auto& [n_id, count] : directions[2]){
+            horizontals[n_id][p_id] = count;
+            num_horizontal++;
+        }
+        for (auto& [n_id, count] : directions[1]){
+            verticals[p_id][n_id] = count;
+            num_vertical++;
+        }
+        for (auto& [n_id, count] : directions[3]){
+            verticals[n_id][p_id] = count;
+            num_vertical++;
+        }
+    }
+    num_vertical /= 2;
+    num_horizontal /= 2;
+    std::ofstream output(output_file, std::ofstream::out);
+    output << "kernel " << kernel_size_ << std::endl;
+    output << "patterns " << num_patterns << std::endl;
+
+    for(auto& [id,pattern] : patterns_){
+        output << id << std::endl;
+        std::vector<std::vector<int>> p = pattern.GetPattern();
+        for(std::vector<int> row : p){
+            for (int v: row){
+                output << v << " ";
+            }
+            output << std::endl;
+        }
+    }
+
+
+    output << "horizontal " << num_horizontal << std::endl;
+    for(auto& [left, right_count] : horizontals){
+        for (auto& [right, count] : right_count){
+            output << left << " " << right << "    " << count << std::endl;
+        }
+    }
+
+    output << "vertical " << num_vertical << std::endl;
+    for(auto& [top, bottom_count] : verticals){
+        for (auto& [bottom, count] : bottom_count){
+            output << top << " " << bottom << "    " << count << std::endl;
+        }    
+    }
 }
 
 int Parser::GeneratePatternID(std::vector<std::vector<int>> pattern){
