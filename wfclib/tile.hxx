@@ -29,12 +29,13 @@ public:
     Tile(std::map<int,int> unconstrained, std::map<int,wfc::Pattern> patterns);
     std::optional<wfc::Pattern> final_state_;
     int CollapseState();
+    bool UpdateState(std::map<int,int> impossible_states);
     void UpdateEntropy();
-    void UpdateState(std::map<int,int> impossible_states);
     void SetNeighbours(std::vector<Tile*> neighbours);
     std::vector<Tile*> GetNeighbours();
     float GetEntropy();
     std::map<int,float> GetState();
+    std::vector<int> GetPossibleStates();
     bool IsCollapsed();
 };
 

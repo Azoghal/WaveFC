@@ -29,16 +29,19 @@ Tile::Tile(std::map<int,int> unconstrained_state, std::map<int,wfc::Pattern> pat
     this->UpdateEntropy();
 }
 
-void Tile::UpdateState(std::map<int,int> constrained_states){
+bool Tile::UpdateState(std::map<int,int> constrained_states){
     // Remove the given count from each part of the state.
     // Change to boolean if anything changed - determines if children added to queue.
+    bool change_made = false;
     if (!collapsed_){
         // do the updating
         for (int p_id=1; p_id< num_patterns_+1; ++p_id){
             int current_weight = state_[p_id];
             int new_weight = constrained_states[p_id];
             if (new_weight < current_weight){
+                std::cout << "reducing a weight" << std::endl;
                 state_[p_id] = new_weight;
+                change_made = true;
             }
         }
         this->UpdateSumWeights();
@@ -47,6 +50,7 @@ void Tile::UpdateState(std::map<int,int> constrained_states){
     else{
         state_ = std::map<int,float>();
     }
+    return change_made;
 }
 
 void Tile::UpdateSumWeights(){
@@ -118,5 +122,19 @@ std::map<int,float> Tile::GetState(){
     return state_;
 }
 
+std::vector<int> Tile::GetPossibleStates(){
+    if (collapsed_){
+        return std::vector<int> {final_state_.value().GetPatternID()};
+    }
+    else{
+        std::vector<int> possible_states;
+        for (auto& [id, weight] : state_){
+            if (weight > 0){
+                possible_states.push_back(id);
+            }
+        }
+        return possible_states;
+    }
+}
 
 } // namespace wfc

@@ -1,6 +1,7 @@
 #include "wave_function_collapse.hxx"
 #include <limits>
 #include <stdlib.h>
+#include <queue>
 
 namespace wfc {
     
@@ -140,32 +141,34 @@ int WaveFunctionCollapse::FindLowestEntropy(){
 void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
     // Find neighbours that need updated superposition
     std::cout << "Propogating changes" << std::endl;
-    std::vector<wfc::Tile*> neighbours = updated_tile->GetNeighbours();
-    // Add neighbours of changed tile to queue.
-    // Loop while queue not empty:
-    //     Pop tile
-    //     Get neighbours
-    //     Calculate if set must be reduced
-    //          reduce set
-    //          add neighbours to queue
-    // Do queue based bfs propagations
+
+    std::set<Tile*> visited;
+    std::queue<Tile*> update_queue;
     std::vector<int> pattern_ids;
-    pattern_ids.push_back(updated_tile->final_state_.value().GetPatternID());
-    std::vector<std::map<int,int>> constrained_states = constraints_.BuildConstrainedSets(pattern_ids);
-    for (int i=0; i < 4; ++i){
-        wfc::Tile* neighbour = neighbours[i];
-        std::map<int,int> constrained_direction = constrained_states[i];
-        neighbour->UpdateState(constrained_direction);
-        // Inform the neighbours of the count of states that are no longer 
-        // viable because of the newly updated tile.
-        // If newly updated is A
-        // and we look to the right, originally could have been A(4) or B(4)
-        // then we inform it to subtract B(4) from the state
-        // If newly updated is A or B
-        // And originally right of could have been A(4) B(4) C(4)
-        // Then we inform it to subtract C(4) and D
-        // If overall state started as A(16) B(16) C(16) D(16) for example
-        // We end up with A(16) B(16) C(12)
+
+    update_queue.push(updated_tile);
+    visited.insert(updated_tile);
+
+    wfc::Tile* current_tile;
+    while (!update_queue.empty()){
+        current_tile = update_queue.front();
+        update_queue.pop();
+        std::vector<wfc::Tile*> neighbours = current_tile->GetNeighbours();
+        pattern_ids = current_tile->GetPossibleStates();
+        std::vector<std::map<int,int>> constrained_states = constraints_.BuildConstrainedSets(pattern_ids);
+        std::vector<std::string> directions = {"right", "up", "left", "down"};
+        for (int i=0; i < 4; ++i){
+            std::cout << directions[i] << std::endl;
+            wfc::Tile* neighbour = neighbours[i];
+            std::map<int,int> constrained_direction = constrained_states[i];
+            bool changed = neighbour->UpdateState(constrained_direction);
+            std::cout << "changed? " << changed << std::endl;
+            if (changed && (visited.find(neighbour) == visited.end())){
+                std::cout << "adding a neighbour!" << std::endl;
+                update_queue.push(neighbour);
+                visited.insert(neighbour);
+            }
+        }
     }
 }
 
