@@ -59,6 +59,13 @@ void Parser::Parse(std::string input_file, int kernel_size){
     this->ParseLoop();
 }
 
+void Parser::Parse(std::string input_file, int kernel_size, bool save){
+    this->Parse(input_file, kernel_size);
+    if (save){
+        this->SaveParse("SavedConstraints");
+    }
+}
+
 void Parser::ParseLoop(){
     // Find all kernels (for now ignoring symmetry and rotations)
     //std::unordered_map<int, int> states_observed;
@@ -300,6 +307,16 @@ void Parser::LoadParse(std::string input_file){
 
 void Parser::SaveParse(std::string output_file){
     // Convert constraints to text and write them
+    //Temp
+    // kernel [kernel size]
+    // patterns [n number of patterns]
+    // 
+    // [pattern id]
+    // [kernel size x colour id]
+    // [... kernel size]
+    // repeated n times
+    //std::pair<int,std::string> token;
+    std::cout << "Saving constraints (not yet implemented)" << std::endl;
 }
 
 int Parser::GeneratePatternID(std::vector<std::vector<int>> pattern){
@@ -338,6 +355,10 @@ wfc::Constraints Parser::GetConstraints(){
 
 std::map<int, wfc::Pattern> Parser::GetPatterns(){
     return patterns_;
+}
+
+int Parser::GetKernelSize(){
+    return kernel_size_;
 }
 
 

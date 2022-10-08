@@ -33,57 +33,85 @@ namespace argparsing{
         // Presence of keyword results in true.
         return keyword_to_bool(exp_keyword, keyword, true);
     }
+
+    void PrintUsage(std::string name){
+        std::cerr << "Usage: " << std::endl;
+        std::cerr << name << " parse [parse source] [wave width in kernels] [wave height in kernels] [kernel-size] [[--wait] [--save]]" << std::endl;
+        std::cerr << name << " load [load source] [wave width] [wave height] [[--wait]]" << std::endl;
+    } 
 }
 
 int main(int argc, char const *argv[])
 {
-    std::string usage_string = "Usage: " + std::string(argv[0]) + " [parse source] [wave width] [wave height] [kernel-size] [[--wait]]";
-    if (argc != 5 && argc != 6){
-        std::cerr << usage_string << std::endl;
-        return 1;
-    }
-
     // Set random seed for state collapse
     srand(time(NULL));
 
-    // Parse CLI arguments
-    std::string filename = argv[1];
-    int w = argparsing::arg_to_int(argv[2]);
-    int h = argparsing::arg_to_int(argv[3]);
-    int kernel_size = argparsing::arg_to_int(argv[4]);
+    int w,h,kernel_size;
+    std::string input_file;
+    bool wait_for_input = false, save_constraints = false;
 
-    if ((w % kernel_size) || (h % kernel_size)){
-        std::cerr << "Wave must be a multiple of kernel-size in all dimensions" << std::endl;
-        std::cerr << usage_string << std::endl;
-        return 1;
-    }
 
-    bool wait_for_input = false;
-    if (argc == 6){
-        // If add more keyword arguments, loop over each passed pair and query for matching each expected
-        wait_for_input = argparsing::keyword_to_bool("--wait", argv[5]);
-    }
-
-    // Parse source image and extract information
     wfc::Parser WaveParse;
     wfc::Constraints constraints;
     std::map<int, wfc::Pattern> patterns;
-    try {
-        WaveParse.LoadParse("constraints_2.txt");
-        constraints = WaveParse.GetConstraints();
-        patterns = WaveParse.GetPatterns();
-        // WaveParse.Parse(filename, kernel_size);
-        // constraints = WaveParse.GetConstraints();
-        // patterns = WaveParse.GetPatterns();
+
+    // Parse CLI arguments
+    std::string action = argv[1];
+    if (action == "parse"){
+        if (argc < 6 || argc > 8){
+            argparsing::PrintUsage(std::string(argv[0]));
+        }
+        input_file = argv[2];
+        w = argparsing::arg_to_int(argv[3]);
+        h = argparsing::arg_to_int(argv[4]);
+        kernel_size = argparsing::arg_to_int(argv[5]);
+        if (argc > 6){
+            for (int i=6; i<argc; ++i){
+                wait_for_input = wait_for_input | (argv[i] == std::string("--wait"));
+                save_constraints = save_constraints | (argv[i] == std::string("--save"));
+            }
+        }
+        try {
+            WaveParse.Parse(input_file, kernel_size, save_constraints);
+            constraints = WaveParse.GetConstraints();
+            patterns = WaveParse.GetPatterns();
+        }
+        catch (std::invalid_argument& e){
+            std::cerr << e.what() << std::endl;
+            argparsing::PrintUsage(argv[0]);
+            return 1;
+        }
     }
-    catch (std::invalid_argument& e){
-        std::cerr << e.what() << std::endl;
-        std::cerr << usage_string << std::endl;
+    else if (action == "load"){
+        if (argc < 5 || argc > 6){
+            argparsing::PrintUsage(std::string(argv[0]));
+        }
+        input_file = argv[2];
+        w = argparsing::arg_to_int(argv[3]);
+        h = argparsing::arg_to_int(argv[4]);
+        std::cout << "width and height " << w << " " << h << std::endl;
+        if (argc > 5){
+            for (int i=5; i<argc; ++i){
+                wait_for_input = wait_for_input | (argv[i] == std::string("--wait"));
+            }
+        }
+        try {
+            WaveParse.LoadParse(input_file);
+            constraints = WaveParse.GetConstraints();
+            patterns = WaveParse.GetPatterns();
+            kernel_size = WaveParse.GetKernelSize();
+        }
+        catch (std::invalid_argument& e){
+            std::cerr << e.what() << std::endl;
+            argparsing::PrintUsage(argv[0]);
+            return 1;
+        }   
+    }
+    else{
+        argparsing::PrintUsage(argv[0]);
         return 1;
     }
-    // Any other exceptions
-    
-    
+
     // Setup renderer
     renderer::WorldRenderer WaveRend(w, h);
 

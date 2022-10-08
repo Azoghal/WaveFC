@@ -30,10 +30,12 @@ public:
     void SetKernelSize(int kernel_size);
     void UpdateInput(std::vector<std::vector<int>> new_input);
     void Parse(std::string input_file, int kernel_size);
+    void Parse(std::string input_file, int kernel_size, bool save);
     void SaveParse(std::string output_file);
     void LoadParse(std::string input_file);
     wfc::Constraints GetConstraints();
     std::map<int,wfc::Pattern> GetPatterns();
+    int GetKernelSize();
 };
 
 
