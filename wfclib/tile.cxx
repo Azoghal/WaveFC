@@ -39,7 +39,6 @@ bool Tile::UpdateState(std::map<int,int> constrained_states){
             int current_weight = state_[p_id];
             int new_weight = constrained_states[p_id];
             if (new_weight < current_weight){
-                std::cout << "reducing a weight" << std::endl;
                 state_[p_id] = new_weight;
                 change_made = true;
             }

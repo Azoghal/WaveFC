@@ -106,6 +106,8 @@ int WaveFunctionCollapse::Collapse(bool wait_for_input){
 
 int WaveFunctionCollapse::FindLowestEntropy(){
     // loop over all and Get entropy, remembering lowest
+    float noise;
+    float noise_magnitude = 0.001;
     float min_entropy = std::numeric_limits<float>::max();
     std::cout << "Finding lowest Entropy" << std::endl;
     wfc::Tile* lowest = nullptr;
@@ -113,9 +115,10 @@ int WaveFunctionCollapse::FindLowestEntropy(){
     // TODO can add class for world_ to make this and other things easier
     for(auto& row:world_){
         for(auto& tile:row){
+            noise = static_cast <float> (rand()) / (static_cast <float>(RAND_MAX));
             if (!tile.IsCollapsed()){
                 all_collapsed = false;
-                float entropy = tile.GetEntropy();
+                float entropy = tile.GetEntropy() + noise;
                 if (entropy < min_entropy){
                     lowest = &tile;
                     min_entropy = entropy;
@@ -156,15 +159,11 @@ void WaveFunctionCollapse::Propagate(wfc::Tile* updated_tile){
         std::vector<wfc::Tile*> neighbours = current_tile->GetNeighbours();
         pattern_ids = current_tile->GetPossibleStates();
         std::vector<std::map<int,int>> constrained_states = constraints_.BuildConstrainedSets(pattern_ids);
-        std::vector<std::string> directions = {"right", "up", "left", "down"};
         for (int i=0; i < 4; ++i){
-            std::cout << directions[i] << std::endl;
             wfc::Tile* neighbour = neighbours[i];
             std::map<int,int> constrained_direction = constrained_states[i];
             bool changed = neighbour->UpdateState(constrained_direction);
-            std::cout << "changed? " << changed << std::endl;
             if (changed && (visited.find(neighbour) == visited.end())){
-                std::cout << "adding a neighbour!" << std::endl;
                 update_queue.push(neighbour);
                 visited.insert(neighbour);
             }
