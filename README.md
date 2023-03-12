@@ -1,4 +1,2 @@
 # WaveFC
-C++ Wave Function Collapse
-
-C++ Practice Project
+Wave Function Collapse implementation to practice C++ and CMake
